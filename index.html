@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>AgriSmart Pro - منصة الزراعة الذكية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f0 0%, #e0e8e0 100%);
+            min-height: 100vh;
+        }
+
+        /* شريط التنقل */
+        .navbar {
+            background: linear-gradient(135deg, #1a5f3e, #2e7d32);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .logo span {
+            color: #ffc107;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffc107;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #1a5f3e;
+        }
+
+        .btn-primary {
+            background: #ff9800;
+            border: none;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        /* اسم المستخدم */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+        }
+
+        .user-info i {
+            font-size: 1.2rem;
+        }
+
+        .user-info span {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* المحتوى الرئيسي */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+        }
+
+        /* بطاقة الترحيب */
+        .hero {
+            background: linear-gradient(135deg, #fff8e7, #fff3e0);
+            border-radius: 40px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #1a5f3e;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        /* بطاقات المميزات */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(26,95,62,0.1);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: #ff9800;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #1a5f3e;
+            margin-bottom: 0.5rem;
+        }
+
+        /* نافذة تسجيل الدخول */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 40px;
+            padding: 2rem;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header i {
+            font-size: 3rem;
+            color: #ff9800;
+        }
+
+        .modal-header h2 {
+            color: #1a5f3e;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .switch-auth {
+            color: #ff9800;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* تنبيه */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a5f3e;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            display: none;
+            z-index: 2500;
+            font-size: 0.9rem;
+        }
+
+        /* زر تجريبي */
+        .demo-badge {
+            background: #ff9800;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+        }
+
+        /* عند تسجيل الدخول */
+        .logged-content {
+            display: none;
+        }
+
+        .logged-content.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل -->
+    <div class="navbar">
+        <div class="logo">Agri<span>Smart</span> Pro</div>
+        <div class="nav-links">
+            <a href="#">الرئيسية</a>
+            <a href="#" onclick="showToast('📱 قريباً'); return false;">المميزات</a>
+            <a href="#" onclick="showToast('📞 قريباً'); return false;">اتصل بنا</a>
+            <div id="authSection">
+                <div class="auth-buttons" id="authButtons">
+                    <button class="btn-outline" onclick="openModal('login')">تسجيل الدخول</button>
+                    <button class="btn-primary" onclick="openModal('signup')">إنشاء حساب</button>
+                </div>
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">مستخدم</span>
+                    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container">
+        <!-- المحتوى لغير المسجلين -->
+        <div id="publicContent">
+            <div class="hero">
+                <h1>🌾 الزراعة الذكية للمستقبل</h1>
+                <p>نظام متكامل لتحليل التربة والري الذكي باستخدام الذكاء الاصطناعي</p>
+                <button class="btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;" onclick="openModal('signup')">ابدأ الآن مجاناً</button>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-flask"></i>
+                    <h3>تحليل التربة</h3>
+                    <p>باستخدام Hanna HI3896 والذكاء الاصطناعي نحول الألوان إلى أرقام دقيقة</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-tint"></i>
+                    <h3>ري ذكي</h3>
+                    <p>تحكم أوتوماتيكي حسب الطقس ونوع المحصول</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>توقع المردودية</h3>
+                    <p>حساب دقيق للإنتاج المتوقع بناءً على تحليل التربة</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-leaf"></i>
+                    <h3>كشف الأمراض</h3>
+                    <p>تحليل صور النباتات واكتشاف الأمراض مبكراً</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- المحتوى للمسجلين -->
+        <div id="loggedContent" class="logged-content">
+            <div class="hero">
+                <h1>مرحباً بك <span id="welcomeName">مزارع</span>! 👨‍🌾</h1>
+                <p>مزرعتك الذكية في انتظارك. جرب المحاكاة أدناه!</p>
+            </div>
+
+            <!-- هنا نقدر نحط التطبيق الكامل -->
+            <div style="background: white; border-radius: 30px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                <h3 style="color: #1a5f3e; margin-bottom: 1rem;"><i class="fas fa-microscope"></i> تجربة تحليل التربة</h3>
+                <p style="color: #666; margin-bottom: 1rem;">🔬 اضغط على الزر لتحليل التربة (محاكاة Hanna HI3896)</p>
+                <button class="btn-primary" onclick="simulateSoilAnalysis()">تحليل التربة الآن</button>
+                <div id="analysisResult" style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 20px; display: none;">
+                    <h4>نتائج التحليل:</h4>
+                    <p id="resultText"></p>
+                </div>
+            </div>
+
+            <div style="background: white; border-radius: 30px; padding: 1.5rem;">
+                <h3 style="color: #1a5f3e; margin-bottom: 1rem;"><i class="fas fa-seedling"></i> إضافة زرع جديد</h3>
+                <div class="form-group">
+                    <input type="text" id="cropName" placeholder="نوع الزرع (مثال: طماطم)" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="cropArea" placeholder="المساحة (م²)" style="width: 100%;">
+                </div>
+                <button class="btn-primary" onclick="addPlant()">إضافة زرع</button>
+                <div id="plantsList" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول/إنشاء حساب -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-leaf"></i>
+                <h2 id="modalTitle">تسجيل الدخول</h2>
+            </div>
+            <div id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="كلمة المرور">
+                </div>
+                <button class="btn-primary" style="width: 100%;" onclick="login()">تسجيل الدخول</button>
+            </div>
+            <div id="signupForm" style="display: none;">
+                <div class="form-group">
+                    <input type="text" id="signupName" placeholder="الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signupEmail" placeholder="البريد الإلكتروني">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupPassword" placeholder="كلمة المرور">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="signupFarm" placeholder="اسم المزرعة (اختياري)">
+                </div>
+                <button class="btn-primary" style="width: 100%;" onclick="signup()">إنشاء حساب</button>
+            </div>
+            <div class="modal-footer">
+                <p id="switchText">ليس لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">إنشاء حساب</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- تنبيه -->
+    <div class="toast" id="toast">تنبيه</div>
+
+    <script>
+        // المستخدمين المخزنين (محاكاة)
+        let users = JSON.parse(localStorage.getItem('agrismart_users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('agrismart_current_user')) || null;
+
+        // تهيئة الصفحة
+        function init() {
+            if(currentUser) {
+                showLoggedInUI(currentUser);
+            } else {
+                showLoggedOutUI();
+            }
+        }
+
+        // عرض واجهة تسجيل الدخول
+        function showLoggedInUI(user) {
+            document.getElementById('publicContent').style.display = 'none';
+            document.getElementById('loggedContent').classList.add('show');
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('userName').innerText = user.name;
+            document.getElementById('welcomeName').innerText = user.name;
+            
+            // تحميل مزارع المستخدم
+            loadUserPlants();
+        }
+
+        // عرض واجهة الخروج
+        function showLoggedOutUI() {
+            document.getElementById('publicContent').style.display = 'block';
+            document.getElementById('loggedContent').classList.remove('show');
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userInfo').style.display = 'none';
+        }
+
+        // فتح النافذة
+        let currentAuthMode = 'login';
+        function openModal(mode) {
+            currentAuthMode = mode;
+            const modal = document.getElementById('authModal');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const switchText = document.getElementById('switchText');
+            
+            if(mode === 'login') {
+                modalTitle.innerText = 'تسجيل الدخول';
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                switchText.innerHTML = 'ليس لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">إنشاء حساب</span>';
+            } else {
+                modalTitle.innerText = 'إنشاء حساب جديد';
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                switchText.innerHTML = 'لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">تسجيل الدخول</span>';
+            }
+            modal.style.display = 'flex';
+        }
+
+        // تبديل بين تسجيل الدخول وإنشاء حساب
+        function toggleAuthMode() {
+            if(currentAuthMode === 'login') {
+                openModal('signup');
+            } else {
+                openModal('login');
+            }
+        }
+
+        // إنشاء حساب
+        function signup() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const farm = document.getElementById('signupFarm').value;
+            
+            if(!name || !email || !password) {
+                showToast('⚠️ الرجاء ملء جميع الحقول');
+                return;
+            }
+            
+            // التحقق من وجود البريد
+            if(users.find(u => u.email === email)) {
+                showToast('⚠️ هذا البريد مسجل مسبقاً');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                farm: farm || 'مزرعتي',
+                plants: [],
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('agrismart_users', JSON.stringify(users));
+            
+            showToast('✅ تم إنشاء الحساب بنجاح!');
+            document.getElementById('authModal').style.display = 'none';
+            
+            // تسجيل الدخول تلقائياً
+            loginAfterSignup(email, password);
+        }
+        
+        function loginAfterSignup(email, password) {
+            const user = users.find(u => u.email === email && u.password === password);
+            if(user) {
+                currentUser = user;
+                localStorage.setItem('agrismart_current_user', JSON.stringify(user));
+                showLoggedInUI(user);
+                showToast('مرحباً بك في AgriSmart Pro!');
+            }
+        }
+        
+        // تسجيل الدخول
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if(!email || !password) {
+                showToast('⚠️ الرجاء إدخال البريد وكلمة المرور');
+                return;
+            }
+            
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if(user) {
+                currentUser = user;
+                localStorage.setItem('agrismart_current_user', JSON.stringify(user));
+                document.getElementById('authModal').style.display = 'none';
+                showLoggedInUI(user);
+                showToast('مرحباً بك ' + user.name + '!');
+            } else {
+                showToast('❌ البريد أو كلمة المرور غير صحيحة');
+            }
+        }
+        
+        // تسجيل الخروج
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('agrismart_current_user');
+            showLoggedOutUI();
+            showToast('تم تسجيل الخروج بنجاح');
+        }
+        
+        // محاكاة تحليل التربة
+        function simulateSoilAnalysis() {
+            if(!currentUser) return;
+            
+            const results = {
+                N: Math.floor(Math.random() * 40) + 30,
+                P: Math.floor(Math.random() * 35) + 15,
+                K: Math.floor(Math.random() * 80) + 70,
+                pH: (Math.random() * 2 + 5.5).toFixed(1)
+            };
+            
+            let suitability = 0;
+            if(results.N >= 40 && results.N <= 60) suitability += 30;
+            else if(results.N >= 30) suitability += 20;
+            else suitability += 10;
+            
+            if(results.P >= 25 && results.P <= 40) suitability += 25;
+            else if(results.P >= 15) suitability += 15;
+            else suitability += 5;
+            
+            if(results.K >= 90 && results.K <= 130) suitability += 25;
+            else if(results.K >= 70) suitability += 15;
+            else suitability += 5;
+            
+            if(results.pH >= 6.0 && results.pH <= 7.0) suitability += 20;
+            else if(results.pH >= 5.5 && results.pH <= 7.5) suitability += 10;
+            else suitability += 5;
+            
+            const resultDiv = document.getElementById('analysisResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                🧪 تحليل التربة الرقمي:<br><br>
+                • النيتروجين (N): ${results.N} ppm<br>
+                • الفوسفور (P): ${results.P} ppm<br>
+                • البوتاسيوم (K): ${results.K} ppm<br>
+                • درجة الحموضة (pH): ${results.pH}<br><br>
+                🌱 صلاحية الأرض: ${suitability}%<br>
+                ${suitability >= 70 ? '✅ الأرض صالحة للزراعة' : (suitability >= 50 ? '⚠️ تحتاج تحسين' : '❌ غير صالحة حالياً')}
+            `;
+            resultDiv.style.display = 'block';
+            
+            // حفظ التحليل للمستخدم
+            if(currentUser) {
+                if(!currentUser.analyses) currentUser.analyses = [];
+                currentUser.analyses.push(results);
+                localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+                // تحديث في قائمة المستخدمين
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                if(userIndex !== -1) {
+                    users[userIndex] = currentUser;
+                    localStorage.setItem('agrismart_users', JSON.stringify(users));
+                }
+            }
+            
+            showToast('تم تحليل التربة بنجاح!');
+        }
+        
+        // إضافة زرع
+        function addPlant() {
+            if(!currentUser) return;
+            
+            const name = document.getElementById('cropName').value;
+            const area = document.getElementById('cropArea').value;
+            
+            if(!name || !area) {
+                showToast('⚠️ الرجاء إدخال نوع الزرع والمساحة');
+                return;
+            }
+            
+            const newPlant = {
+                id: Date.now(),
+                name: name,
+                area: parseFloat(area),
+                date: new Date().toLocaleDateString('ar-EG')
+            };
+            
+            if(!currentUser.plants) currentUser.plants = [];
+            currentUser.plants.push(newPlant);
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            
+            // تحديث في قائمة المستخدمين
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if(userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('agrismart_users', JSON.stringify(users));
+            }
+            
+            document.getElementById('cropName').value = '';
+            document.getElementById('cropArea').value = '';
+            loadUserPlants();
+            showToast('✅ تم إضافة ' + name + ' بنجاح!');
+        }
+        
+        // تحميل مزارع المستخدم
+        function loadUserPlants() {
+            const plantsList = document.getElementById('plantsList');
+            if(!currentUser || !currentUser.plants || currentUser.plants.length === 0) {
+                plantsList.innerHTML = '<p style="color: #666;">📋 لا توجد مزروعات مضافة بعد</p>';
+                return;
+            }
+            
+            let html = '<div style="margin-top: 1rem;"><h4>🌱 مزروعاتي:</h4>';
+            currentUser.plants.forEach(plant => {
+                html += `
+                    <div style="background: #f5f5f5; padding: 0.8rem; border-radius: 15px; margin-top: 0.5rem; display: flex; justify-content: space-between;">
+                        <div>
+                            <strong>${plant.name}</strong><br>
+                            <small>📏 ${plant.area} م² | 📅 ${plant.date}</small>
+                        </div>
+                        <button onclick="deletePlant(${plant.id})" style="background: none; border: none; color: #f44336; cursor: pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            plantsList.innerHTML = html;
+        }
+        
+        // حذف زرع
+        function deletePlant(plantId) {
+            if(!currentUser) return;
+            currentUser.plants = currentUser.plants.filter(p => p.id !== plantId);
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if(userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('agrismart_users', JSON.stringify(users));
+            }
+            
+            loadUserPlants();
+            showToast('🗑️ تم الحذف');
+        }
+        
+        // إغلاق النافذة
+        function closeModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+        
+        // تنبيه
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+        
+        // إغلاق النافذة عند الضغط خارجها
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            if(event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+        
+        // تهيئة
+        init();
+        
+        // جعل الدوال عامة
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.login = login;
+        window.signup = signup;
+        window.logout = logout;
+        window.toggleAuthMode = toggleAuthMode;
+        window.simulateSoilAnalysis = simulateSoilAnalysis;
+        window.addPlant = addPlant;
+        window.deletePlant = deletePlant;
+        window.showToast = showToast;
+    </script>
+</body>
+</html>
