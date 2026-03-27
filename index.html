@@ -2,51 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AgriSmart Pro | الزراعة الذكية المتكاملة</title>
-    <meta name="description" content="منصة متكاملة للزراعة الذكية - تحليل التربة بالذكاء الاصطناعي، نظام ري ذكي، كشف الأمراض، وتوقع المردودية">
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>AgriSmart Pro - منصة الزراعة الذكية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-
-        // 🔥 Firebase Configuration - من مشروعك
-        const firebaseConfig = {
-            apiKey: "AIzaSyAfN6JAeJKMKp1LgDTZAX-JnraMp5u43o4",
-            authDomain: "agrismart-pro.firebaseapp.com",
-            projectId: "agrismart-pro",
-            storageBucket: "agrismart-pro.firebasestorage.app",
-            messagingSenderId: "233815364329",
-            appId: "1:233815364329:web:ae36184ba8bd3425771678",
-            measurementId: "G-1TL6WC9YZR"
-        };
-
-        // تهيئة Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // جعل الكائنات متاحة عالمياً
-        window.auth = auth;
-        window.db = db;
-        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-        window.signOut = signOut;
-        window.onAuthStateChanged = onAuthStateChanged;
-        window.doc = doc;
-        window.setDoc = setDoc;
-        window.getDoc = getDoc;
-        window.updateDoc = updateDoc;
-        window.arrayUnion = arrayUnion;
-        window.arrayRemove = arrayRemove;
-        window.deleteDoc = deleteDoc;
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -55,431 +13,462 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        :root {
-            --primary: #1a5f3e;
-            --primary-dark: #0d3d26;
-            --primary-light: #2e7d32;
-            --secondary: #ff9800;
-            --secondary-light: #ffb74d;
-            --secondary-dark: #f57c00;
-            --danger: #f44336;
-            --warning: #ffc107;
-            --success: #4caf50;
-            --info: #2196f3;
-            --dark: #1e1e1e;
-            --light: #f8f9fa;
-            --gray: #9e9e9e;
-            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
-            --gradient-accent: linear-gradient(135deg, var(--secondary), var(--secondary-light));
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
-            --shadow-lg: 0 10px 30px rgba(26,95,62,0.15);
-            --shadow-accent: 0 10px 30px rgba(255,152,0,0.25);
-        }
-
         body {
             background: linear-gradient(135deg, #f0f4f0 0%, #e8f0e8 100%);
             min-height: 100vh;
-            padding-bottom: 85px;
+            padding-bottom: 80px;
         }
 
+        /* شريط التنقل */
         .navbar {
-            background: var(--gradient);
+            background: linear-gradient(135deg, #1a5f3e, #2e7d32);
             padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .logo {
             font-size: 1.8rem;
             font-weight: 900;
             color: white;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        .logo span { color: var(--secondary-light); }
-        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-        .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 30px; cursor: pointer; }
-        .nav-links a:hover { background: rgba(255,255,255,0.2); color: var(--secondary-light); }
-        .auth-section { display: flex; gap: 0.8rem; align-items: center; }
-        .btn-outline { background: transparent; border: 2px solid white; color: white; padding: 0.5rem 1.2rem; border-radius: 30px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
-        .btn-outline:hover { background: white; color: var(--primary); }
-        .btn-primary { background: var(--gradient-accent); border: none; color: white; padding: 0.5rem 1.5rem; border-radius: 30px; cursor: pointer; transition: all 0.3s; font-weight: 600; box-shadow: var(--shadow-accent); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,152,0,0.4); }
-        .btn-secondary { background: var(--primary); border: none; color: white; padding: 0.5rem 1.2rem; border-radius: 30px; cursor: pointer; transition: all 0.3s; }
-        .user-info { display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.15); padding: 0.3rem 1rem; border-radius: 50px; backdrop-filter: blur(5px); }
-        
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem 5%; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 25px; text-align: center; box-shadow: var(--shadow-md); transition: all 0.3s; position: relative; overflow: hidden; cursor: pointer; }
-        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient-accent); }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        .stat-icon { font-size: 2.5rem; color: var(--secondary); margin-bottom: 0.5rem; }
-        .stat-value { font-size: 2rem; font-weight: 900; color: var(--primary); }
-        .stat-label { font-size: 0.85rem; color: var(--gray); }
-        
-        .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
-        @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        
-        .card { background: white; border-radius: 30px; padding: 1.8rem; box-shadow: var(--shadow-md); transition: all 0.3s; }
-        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 1rem; }
-        .card-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
-        .card-title i { color: var(--secondary); }
-        
-        .soil-elements { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0; }
-        .element { background: var(--light); border-radius: 20px; padding: 1rem; text-align: center; }
-        .element-value { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-        .element-label { font-size: 0.8rem; color: var(--gray); }
-        .element-status { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 20px; display: inline-block; margin-top: 0.3rem; }
-        .status-good { background: #c8e6c9; color: #2e7d32; }
-        .status-medium { background: #fff3e0; color: #f57c00; }
-        .status-bad { background: #ffcdd2; color: #c62828; }
-        
-        .progress-bar { height: 10px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 1rem 0; }
-        .progress-fill { height: 100%; background: var(--gradient-accent); border-radius: 10px; transition: width 0.5s; }
-        
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.9rem 1rem; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 1rem; transition: all 0.3s; background: var(--light); }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--secondary); background: white; }
-        
-        .plants-list { max-height: 400px; overflow-y: auto; }
-        .plant-item { background: var(--light); border-radius: 20px; padding: 1rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; }
-        .plant-item:hover { background: #fff3e0; }
-        .plant-info h4 { font-size: 1rem; margin-bottom: 0.2rem; }
-        .plant-info p { font-size: 0.8rem; color: var(--gray); }
-        .plant-stats { display: flex; gap: 1rem; align-items: center; }
-        .delete-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem; padding: 0.5rem; border-radius: 50%; transition: all 0.3s; }
-        .delete-btn:hover { background: #ffcdd2; transform: scale(1.1); }
-        
-        .recommendations-list { max-height: 250px; overflow-y: auto; }
-        .rec-item { display: flex; align-items: center; gap: 1rem; padding: 0.8rem; border-bottom: 1px solid #f0f0f0; transition: all 0.3s; }
-        .rec-item:hover { background: var(--light); border-radius: 15px; }
-        .rec-priority { width: 12px; height: 12px; border-radius: 50%; }
-        .rec-priority.high { background: var(--danger); box-shadow: 0 0 5px var(--danger); }
-        .rec-priority.medium { background: var(--warning); }
-        .rec-priority.low { background: var(--success); }
-        .rec-content { flex: 1; }
-        .rec-content h4 { font-size: 0.95rem; margin-bottom: 0.2rem; }
-        .rec-content p { font-size: 0.8rem; color: var(--gray); }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(5px); }
-        .modal-content { background: white; border-radius: 40px; padding: 2rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 0.8rem 1.8rem; border-radius: 50px; display: none; z-index: 3000; font-size: 0.9rem; box-shadow: var(--shadow-lg); white-space: nowrap; }
-        
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 0.8rem 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
-        .nav-item { text-align: center; color: var(--gray); text-decoration: none; font-size: 0.75rem; transition: all 0.3s; padding: 0.3rem 1rem; border-radius: 30px; cursor: pointer; }
-        .nav-item.active { color: var(--primary); background: #e8f5e9; }
-        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 0.2rem; }
-        
-        .logged-content { display: none; }
-        .logged-content.show { display: block; }
-        #publicContent { display: block; }
-        .loader { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .feature-bg { background: linear-gradient(135deg, #fff8e7, #fff3e0); border-radius: 30px; padding: 2rem; margin-bottom: 2rem; text-align: center; }
-        
-        .upload-area { border: 2px dashed var(--secondary); border-radius: 20px; padding: 1rem; text-align: center; cursor: pointer; margin: 1rem 0; transition: all 0.3s; }
-        .upload-area:hover { background: #fff3e0; transform: scale(1.02); }
-        
-        .loading-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #f3f3f3; border-top: 3px solid var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .logo span {
+            color: #ffc107;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #1a5f3e;
+        }
+
+        .btn-primary {
+            background: #ff9800;
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+        }
+
+        .user-info span {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* المحتوى الرئيسي */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #fff8e7, #fff3e0);
+            border-radius: 40px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #1a5f3e;
+            margin-bottom: 1rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: #ff9800;
+            margin-bottom: 1rem;
+        }
+
+        /* نافذة تسجيل الدخول */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 40px;
+            padding: 2rem;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header i {
+            font-size: 3rem;
+            color: #ff9800;
+        }
+
+        .modal-header h2 {
+            color: #1a5f3e;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .switch-auth {
+            color: #ff9800;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a5f3e;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            display: none;
+            z-index: 2500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .logged-content {
+            display: none;
+        }
+
+        .logged-content.show {
+            display: block;
+        }
+
+        #publicContent {
+            display: block;
+        }
+
+        .soil-card {
+            background: white;
+            border-radius: 30px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .soil-elements {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .element {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .element-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a5f3e;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9800, #ffc107);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .upload-area {
+            border: 2px dashed #ff9800;
+            border-radius: 20px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            margin: 1rem 0;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #fff3e0;
+        }
+
+        .plants-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .plant-item {
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <div class="logo"><i class="fas fa-seedling"></i> Agri<span>Smart</span> Pro</div>
+        <div class="logo">Agri<span>Smart</span> Pro</div>
         <div class="nav-links">
-            <a onclick="scrollToTop();"><i class="fas fa-home"></i> الرئيسية</a>
-            <div class="auth-section">
-                <div id="authButtons">
-                    <button class="btn-outline" onclick="openModal('login')"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
-                    <button class="btn-primary" onclick="openModal('signup')"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
-                </div>
-                <div class="user-info" id="userInfo" style="display: none;">
-                    <i class="fas fa-user-circle"></i>
-                    <span id="userName"></span>
-                    <button class="btn-outline" style="padding: 0.3rem 0.8rem;" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> خروج</button>
-                </div>
+            <a onclick="scrollToTop()">الرئيسية</a>
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn-outline" onclick="openModal('login')">تسجيل الدخول</button>
+                <button class="btn-primary" onclick="openModal('signup')">إنشاء حساب</button>
+            </div>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+                <button class="logout-btn" onclick="logout()">خروج</button>
             </div>
         </div>
     </div>
 
     <div class="container">
         <div id="publicContent">
-            <div class="feature-bg">
-                <h1 style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">🌾 AgriSmart Pro</h1>
-                <p style="font-size: 1.2rem; color: #555; margin-bottom: 1.5rem;">نظام متكامل للزراعة الذكية - تحليل التربة، ري ذكي، كشف الأمراض، وتوقع المردودية</p>
-                <button class="btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;" onclick="openModal('signup')">ابدأ الآن مجاناً <i class="fas fa-arrow-left"></i></button>
+            <div class="hero">
+                <h1>🌾 الزراعة الذكية للمستقبل</h1>
+                <p>نظام متكامل لتحليل التربة والري الذكي باستخدام الذكاء الاصطناعي</p>
+                <button class="btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem; margin-top: 1rem;" onclick="openModal('signup')">ابدأ الآن مجاناً</button>
             </div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-flask"></i></div><div class="stat-value">98%</div><div class="stat-label">دقة التحليل</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-tint"></i></div><div class="stat-value">40%</div><div class="stat-label">توفير الماء</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-value">+50%</div><div class="stat-label">زيادة الإنتاج</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-cloud"></i></div><div class="stat-value">100%</div><div class="stat-label">سحابي آمن</div></div>
+            <div class="features">
+                <div class="feature-card"><i class="fas fa-flask"></i><h3>تحليل التربة</h3><p>باستخدام Hanna HI3896 والذكاء الاصطناعي</p></div>
+                <div class="feature-card"><i class="fas fa-tint"></i><h3>ري ذكي</h3><p>تحكم أوتوماتيكي حسب الطقس</p></div>
+                <div class="feature-card"><i class="fas fa-chart-line"></i><h3>توقع المردودية</h3><p>حساب دقيق للإنتاج المتوقع</p></div>
             </div>
         </div>
 
         <div id="loggedContent" class="logged-content">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-tractor"></i></div><div class="stat-value" id="totalArea">0</div><div class="stat-label">إجمالي المساحة (م²)</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-seedling"></i></div><div class="stat-value" id="totalPlants">0</div><div class="stat-label">عدد المزروعات</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-value" id="totalYield">0</div><div class="stat-label">الإنتاج المتوقع (كغ)</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-value" id="totalValue">0</div><div class="stat-label">القيمة المتوقعة (دج)</div></div>
+            <div class="hero">
+                <h1>مرحباً بك <span id="welcomeName"></span>! 👨‍🌾</h1>
+                <p>مزرعتك الذكية في انتظارك</p>
             </div>
 
-            <div class="main-grid">
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-flask"></i> تحليل التربة Hanna HI3896</div></div>
-                    <div class="soil-elements">
-                        <div class="element"><div class="element-value" id="soilN">--</div><div class="element-label">النيتروجين (N) ppm</div><span class="element-status" id="soilNStatus"></span></div>
-                        <div class="element"><div class="element-value" id="soilP">--</div><div class="element-label">الفوسفور (P) ppm</div><span class="element-status" id="soilPStatus"></span></div>
-                        <div class="element"><div class="element-value" id="soilK">--</div><div class="element-label">البوتاسيوم (K) ppm</div><span class="element-status" id="soilKStatus"></span></div>
-                        <div class="element"><div class="element-value" id="soilPH">--</div><div class="element-label">درجة الحموضة (pH)</div><span class="element-status" id="soilPHStatus"></span></div>
-                    </div>
-                    <div><div style="display: flex; justify-content: space-between;"><span>صلاحية الأرض للزراعة</span><span id="suitabilityValue">0%</span></div><div class="progress-bar"><div class="progress-fill" id="suitabilityFill" style="width: 0%;"></div></div></div>
-                    <div class="upload-area" onclick="simulateHannaAnalysis()">
-                        <i class="fas fa-camera" style="font-size: 2rem; color: var(--secondary);"></i>
-                        <p>اضغط لتصوير نتائج Hanna HI3896</p>
-                        <p style="font-size: 0.8rem;">📸 نحول الألوان إلى أرقام دقيقة</p>
-                    </div>
-                    <button class="btn-primary" style="width: 100%;" onclick="simulateHannaAnalysis()"><i class="fas fa-sync-alt"></i> تحليل التربة الآن</button>
+            <div class="soil-card">
+                <h3><i class="fas fa-microscope"></i> تحليل التربة Hanna HI3896</h3>
+                <div class="soil-elements">
+                    <div class="element"><div class="element-value" id="soilN">--</div><div>النيتروجين (N)</div></div>
+                    <div class="element"><div class="element-value" id="soilP">--</div><div>الفوسفور (P)</div></div>
+                    <div class="element"><div class="element-value" id="soilK">--</div><div>البوتاسيوم (K)</div></div>
+                    <div class="element"><div class="element-value" id="soilPH">--</div><div>درجة الحموضة (pH)</div></div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-plus-circle"></i> إضافة زرع جديد</div></div>
-                    <div class="form-group"><label><i class="fas fa-leaf"></i> نوع الزرع</label>
-                        <select id="plantCrop">
-                            <option value="tomato">🍅 طماطم</option><option value="pepper">🌶️ فلفل</option><option value="cucumber">🥒 خيار</option>
-                            <option value="potato">🥔 بطاطا</option><option value="wheat">🌾 قمح</option><option value="strawberry">🍓 فراولة</option>
-                            <option value="onion">🧅 بصل</option><option value="lettuce">🥬 خس</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label><i class="fas fa-vector-square"></i> المساحة (م²)</label><input type="number" id="plantAreaInput" placeholder="مثال: 1000" value="100"></div>
-                    <div class="form-group"><label><i class="fas fa-calendar"></i> تاريخ الزرع</label><input type="date" id="plantDate"></div>
-                    <button class="btn-primary" style="width: 100%;" onclick="addNewPlant()"><i class="fas fa-save"></i> إضافة الزرع</button>
+                <div><div>صلاحية الأرض: <span id="suitabilityValue">0</span>%</div><div class="progress-bar"><div class="progress-fill" id="suitabilityFill"></div></div></div>
+                <div class="upload-area" onclick="simulateAnalysis()">
+                    <i class="fas fa-camera"></i>
+                    <p>اضغط لتصوير نتائج Hanna HI3896</p>
+                    <p style="font-size: 0.8rem;">📸 نحول الألوان إلى أرقام دقيقة</p>
                 </div>
+                <button class="btn-primary" style="width: 100%;" onclick="simulateAnalysis()">تحليل التربة الآن</button>
             </div>
 
-            <div class="card" style="margin-bottom: 1.5rem;">
-                <div class="card-header"><div class="card-title"><i class="fas fa-seedling"></i> مزروعاتي</div><button class="btn-primary" style="padding: 0.3rem 1rem;" onclick="calculateAllYields()"><i class="fas fa-calculator"></i> تحديث</button></div>
-                <div class="plants-list" id="plantsListContainer"><div class="loading-spinner"></div> جاري التحميل...</div>
+            <div class="soil-card">
+                <h3><i class="fas fa-plus-circle"></i> إضافة زرع جديد</h3>
+                <div class="form-group"><input type="text" id="plantName" placeholder="نوع الزرع (مثال: طماطم)"></div>
+                <div class="form-group"><input type="number" id="plantArea" placeholder="المساحة (م²)"></div>
+                <button class="btn-primary" onclick="addPlant()">إضافة زرع</button>
+                <div class="plants-list" id="plantsList"></div>
             </div>
-
-            <div class="card" style="margin-bottom: 1.5rem; background: var(--gradient); color: white;">
-                <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.2);"><div class="card-title" style="color: white;"><i class="fas fa-chart-line"></i> توقع المردودية الإجمالي</div></div>
-                <div style="text-align: center;"><div style="font-size: 3rem; font-weight: 900;" id="totalYieldDisplay">0</div><div>كغ</div>
-                <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1rem;">
-                    <div><div style="font-size: 1.3rem; font-weight: 700;" id="totalYieldValue">0</div><div>دج</div></div>
-                    <div><div style="font-size: 1.3rem; font-weight: 700;" id="avgPerArea">0</div><div>كغ/م²</div></div>
-                </div></div>
-            </div>
-
-            <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-brain"></i> توصيات ذكية من الذكاء الاصطناعي</div></div>
-            <div class="recommendations-list" id="recommendationsContainer"><p style="text-align: center;">قم بتحليل التربة للحصول على توصيات</p></div></div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="scrollToTop();"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-        <div class="nav-item" onclick="showToast('📊 قريباً: تحليلات متقدمة');"><i class="fas fa-chart-line"></i><span>التحليلات</span></div>
-        <div class="nav-item" onclick="showToast('📅 قريباً: جدول الري');"><i class="fas fa-calendar"></i><span>الجدول</span></div>
-        <div class="nav-item" onclick="showToast('👥 قريباً: مجتمع المزارعين');"><i class="fas fa-users"></i><span>المجتمع</span></div>
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-leaf"></i>
+                <h2 id="modalTitle">تسجيل الدخول</h2>
+            </div>
+            <div id="loginForm">
+                <div class="form-group"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني"></div>
+                <div class="form-group"><input type="password" id="loginPassword" placeholder="كلمة المرور"></div>
+                <button class="btn-primary" style="width: 100%;" onclick="login()">تسجيل الدخول</button>
+            </div>
+            <div id="signupForm" style="display: none;">
+                <div class="form-group"><input type="text" id="signupName" placeholder="الاسم الكامل"></div>
+                <div class="form-group"><input type="email" id="signupEmail" placeholder="البريد الإلكتروني"></div>
+                <div class="form-group"><input type="password" id="signupPassword" placeholder="كلمة المرور (6 أحرف على الأقل)"></div>
+                <div class="form-group"><input type="text" id="signupFarm" placeholder="اسم المزرعة (اختياري)"></div>
+                <button class="btn-primary" style="width: 100%;" onclick="signup()">إنشاء حساب</button>
+            </div>
+            <div class="modal-footer">
+                <p id="switchText">ليس لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">إنشاء حساب</span></p>
+            </div>
+        </div>
     </div>
 
-    <div class="modal" id="authModal"><div class="modal-content">
-        <div style="text-align: center;"><i class="fas fa-seedling" style="font-size: 3rem; color: var(--secondary);"></i><h2 id="modalTitle" style="color: var(--primary);">تسجيل الدخول</h2></div>
-        <div id="loginForm"><div class="form-group"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني"></div><div class="form-group"><input type="password" id="loginPassword" placeholder="كلمة المرور"></div><button class="btn-primary" style="width: 100%;" onclick="loginUser()">تسجيل الدخول</button></div>
-        <div id="signupForm" style="display: none;"><div class="form-group"><input type="text" id="signupName" placeholder="الاسم الكامل"></div><div class="form-group"><input type="email" id="signupEmail" placeholder="البريد الإلكتروني"></div><div class="form-group"><input type="password" id="signupPassword" placeholder="كلمة المرور (6 أحرف)"></div><button class="btn-primary" style="width: 100%;" onclick="signupUser()">إنشاء حساب</button></div>
-        <p style="text-align: center; margin-top: 1rem;" id="switchText">ليس لديك حساب؟ <span style="color: var(--secondary); cursor: pointer;" onclick="toggleAuthMode()">إنشاء حساب</span></p>
-    </div></div>
+    <div class="toast" id="toast">تنبيه</div>
 
-    <div class="toast" id="toast"></div>
-
-    <script type="module">
-        // بيانات المحاصيل
-        const cropDatabase = {
-            tomato: { name: 'طماطم', baseYield: 3.5, optimalN: 50, optimalP: 30, optimalK: 120, optimalPH: 6.5, waterNeed: 40, price: 35 },
-            pepper: { name: 'فلفل', baseYield: 2.8, optimalN: 40, optimalP: 35, optimalK: 100, optimalPH: 6.2, waterNeed: 35, price: 45 },
-            cucumber: { name: 'خيار', baseYield: 4.2, optimalN: 45, optimalP: 30, optimalK: 110, optimalPH: 6.8, waterNeed: 45, price: 28 },
-            potato: { name: 'بطاطا', baseYield: 3.8, optimalN: 55, optimalP: 40, optimalK: 140, optimalPH: 5.8, waterNeed: 35, price: 40 },
-            wheat: { name: 'قمح', baseYield: 2.2, optimalN: 60, optimalP: 25, optimalK: 80, optimalPH: 6.5, waterNeed: 30, price: 22 },
-            strawberry: { name: 'فراولة', baseYield: 1.8, optimalN: 40, optimalP: 35, optimalK: 120, optimalPH: 5.8, waterNeed: 30, price: 85 },
-            onion: { name: 'بصل', baseYield: 2.5, optimalN: 35, optimalP: 30, optimalK: 90, optimalPH: 6.2, waterNeed: 25, price: 30 },
-            lettuce: { name: 'خس', baseYield: 2.0, optimalN: 30, optimalP: 25, optimalK: 80, optimalPH: 6.5, waterNeed: 20, price: 25 }
-        };
-
-        let currentUser = null;
+    <script>
+        // بيانات المستخدمين - تخزين محلي (LocalStorage)
+        let users = JSON.parse(localStorage.getItem('agrismart_users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('agrismart_current_user')) || null;
         let currentSoil = { N: 42, P: 28, K: 110, pH: 6.8 };
-        let userPlants = [];
 
-        const auth = window.auth;
-        const db = window.db;
-
-        // مراقبة حالة تسجيل الدخول
-        window.onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
+        // ========== تهيئة الصفحة ==========
+        function init() {
+            if (currentUser) {
                 document.getElementById('publicContent').style.display = 'none';
                 document.getElementById('loggedContent').classList.add('show');
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userInfo').style.display = 'flex';
-                document.getElementById('userName').innerHTML = user.email.split('@')[0];
-                
-                // تحميل بيانات المستخدم من Firestore
-                const userDoc = await window.getDoc(window.doc(db, 'users', user.uid));
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    if (data.soilAnalysis) currentSoil = data.soilAnalysis;
-                    if (data.plants) userPlants = data.plants;
-                    updateSoilDisplay();
-                    displayPlants(userPlants);
-                    calculateAllYieldsWithPlants(userPlants);
-                    updateRecommendations();
-                } else {
-                    await window.setDoc(window.doc(db, 'users', user.uid), {
-                        email: user.email,
-                        name: user.email.split('@')[0],
-                        createdAt: new Date().toISOString(),
-                        plants: [],
-                        soilAnalysis: currentSoil
-                    });
-                    userPlants = [];
-                    displayPlants([]);
-                }
+                document.getElementById('userName').innerHTML = currentUser.name;
+                document.getElementById('welcomeName').innerHTML = currentUser.name;
+                updateSoilDisplay();
+                loadUserPlants();
             } else {
-                currentUser = null;
-                userPlants = [];
                 document.getElementById('publicContent').style.display = 'block';
                 document.getElementById('loggedContent').classList.remove('show');
                 document.getElementById('authButtons').style.display = 'flex';
                 document.getElementById('userInfo').style.display = 'none';
             }
-        });
-
-        function displayPlants(plants) {
-            let container = document.getElementById('plantsListContainer');
-            if (!plants || plants.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--gray);">🌱 لا توجد مزروعات مضافة بعد</p>';
-                return;
-            }
-            let html = '';
-            plants.forEach(plant => {
-                let crop = cropDatabase[plant.crop];
-                let yieldEstimate = calculatePlantYield(plant.area, crop);
-                html += `
-                    <div class="plant-item" data-id="${plant.id}">
-                        <div class="plant-info">
-                            <h4><i class="fas fa-seedling"></i> ${plant.name}</h4>
-                            <p>📏 ${plant.area} م² | 📅 ${plant.date || 'تاريخ غير محدد'}</p>
-                            <p>🍅 الإنتاج المتوقع: ${yieldEstimate} كغ</p>
-                        </div>
-                        <div class="plant-stats">
-                            <div class="plant-water"><i class="fas fa-tint"></i> ${crop.waterNeed} لتر/م²</div>
-                            <button class="delete-btn" onclick="deletePlant('${plant.id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
         }
 
-        function calculatePlantYield(area, crop) {
-            let nFactor = 1 - Math.abs(currentSoil.N - crop.optimalN) / crop.optimalN * 0.5;
-            let pFactor = 1 - Math.abs(currentSoil.P - crop.optimalP) / crop.optimalP * 0.5;
-            let kFactor = 1 - Math.abs(currentSoil.K - crop.optimalK) / crop.optimalK * 0.5;
-            let phFactor = 1 - Math.abs(currentSoil.pH - crop.optimalPH) * 0.2;
-            let soilFactor = Math.max(0.5, (nFactor + pFactor + kFactor + phFactor) / 4);
-            let yieldPerM2 = crop.baseYield * soilFactor;
-            return Math.round(yieldPerM2 * area / 1000);
-        }
-
-        function calculateAllYieldsWithPlants(plants) {
-            if (!plants || plants.length === 0) {
-                document.getElementById('totalYieldDisplay').innerText = '0';
-                document.getElementById('totalYieldValue').innerText = '0';
-                document.getElementById('avgPerArea').innerText = '0';
-                document.getElementById('totalArea').innerText = '0';
-                document.getElementById('totalPlants').innerText = '0';
-                document.getElementById('totalYield').innerText = '0';
-                document.getElementById('totalValue').innerText = '0';
-                return;
-            }
-            let totalYield = 0;
-            let totalValue = 0;
-            let totalArea = 0;
-            plants.forEach(plant => {
-                let crop = cropDatabase[plant.crop];
-                let yieldEst = calculatePlantYield(plant.area, crop);
-                totalYield += yieldEst;
-                totalValue += yieldEst * crop.price;
-                totalArea += plant.area;
-            });
-            document.getElementById('totalYieldDisplay').innerText = totalYield.toLocaleString();
-            document.getElementById('totalYieldValue').innerText = totalValue.toLocaleString();
-            document.getElementById('avgPerArea').innerText = (totalYield / totalArea * 1000).toFixed(1);
-            document.getElementById('totalArea').innerText = totalArea.toLocaleString();
-            document.getElementById('totalPlants').innerText = plants.length;
-            document.getElementById('totalYield').innerText = totalYield.toLocaleString();
-            document.getElementById('totalValue').innerText = totalValue.toLocaleString();
-        }
-
+        // ========== تحديث عرض تحليل التربة ==========
         function updateSoilDisplay() {
-            document.getElementById('soilN').innerText = currentSoil.N;
-            document.getElementById('soilP').innerText = currentSoil.P;
-            document.getElementById('soilK').innerText = currentSoil.K;
-            document.getElementById('soilPH').innerText = currentSoil.pH;
+            document.getElementById('soilN').innerHTML = currentSoil.N;
+            document.getElementById('soilP').innerHTML = currentSoil.P;
+            document.getElementById('soilK').innerHTML = currentSoil.K;
+            document.getElementById('soilPH').innerHTML = currentSoil.pH;
             
-            let crop = cropDatabase.tomato;
-            let nFactor = 1 - Math.abs(currentSoil.N - crop.optimalN) / crop.optimalN * 0.5;
-            let pFactor = 1 - Math.abs(currentSoil.P - crop.optimalP) / crop.optimalP * 0.5;
-            let kFactor = 1 - Math.abs(currentSoil.K - crop.optimalK) / crop.optimalK * 0.5;
-            let phFactor = 1 - Math.abs(currentSoil.pH - crop.optimalPH) * 0.2;
-            let suitability = Math.round((Math.max(0.5,nFactor) + Math.max(0.5,pFactor) + Math.max(0.5,kFactor) + Math.max(0.5,phFactor)) / 4 * 100);
-            document.getElementById('suitabilityValue').innerText = suitability + '%';
+            // حساب صلاحية الأرض
+            let nScore = Math.min(1, currentSoil.N / 50);
+            let pScore = Math.min(1, currentSoil.P / 30);
+            let kScore = Math.min(1, currentSoil.K / 120);
+            let phScore = 1 - Math.abs(currentSoil.pH - 6.5) * 0.2;
+            let suitability = Math.round((nScore + pScore + kScore + phScore) / 4 * 100);
+            document.getElementById('suitabilityValue').innerHTML = suitability;
             document.getElementById('suitabilityFill').style.width = suitability + '%';
-            
-            document.getElementById('soilNStatus').className = 'element-status ' + (currentSoil.N >= 40 && currentSoil.N <= 60 ? 'status-good' : (currentSoil.N >= 30 ? 'status-medium' : 'status-bad'));
-            document.getElementById('soilNStatus').innerText = currentSoil.N >= 40 && currentSoil.N <= 60 ? 'جيد' : (currentSoil.N >= 30 ? 'متوسط' : 'ضعيف');
-            document.getElementById('soilPStatus').className = 'element-status ' + (currentSoil.P >= 25 && currentSoil.P <= 40 ? 'status-good' : (currentSoil.P >= 15 ? 'status-medium' : 'status-bad'));
-            document.getElementById('soilPStatus').innerText = currentSoil.P >= 25 && currentSoil.P <= 40 ? 'جيد' : (currentSoil.P >= 15 ? 'متوسط' : 'ضعيف');
-            document.getElementById('soilKStatus').className = 'element-status ' + (currentSoil.K >= 90 && currentSoil.K <= 130 ? 'status-good' : (currentSoil.K >= 70 ? 'status-medium' : 'status-bad'));
-            document.getElementById('soilKStatus').innerText = currentSoil.K >= 90 && currentSoil.K <= 130 ? 'جيد' : (currentSoil.K >= 70 ? 'متوسط' : 'ضعيف');
-            let phStatus = (currentSoil.pH >= 6 && currentSoil.pH <= 7) ? 'جيد' : ((currentSoil.pH >= 5.5 && currentSoil.pH <= 7.5) ? 'متوسط' : 'ضعيف');
-            document.getElementById('soilPHStatus').className = 'element-status ' + (phStatus === 'جيد' ? 'status-good' : (phStatus === 'متوسط' ? 'status-medium' : 'status-bad'));
-            document.getElementById('soilPHStatus').innerText = phStatus;
         }
 
-        function updateRecommendations() {
-            let container = document.getElementById('recommendationsContainer');
-            let recs = [];
-            if(currentSoil.N < 45) recs.push({ priority: 'high', title: '⚠️ نقص النيتروجين', desc: 'أضف سماد نيتروجيني لتحسين النمو' });
-            if(currentSoil.P < 28) recs.push({ priority: 'medium', title: '⚠️ نقص الفوسفور', desc: 'أضف سماد فوسفاتي لتقوية الجذور' });
-            if(currentSoil.K < 95) recs.push({ priority: 'medium', title: '⚠️ نقص البوتاسيوم', desc: 'أضف سماد بوتاسيوم لتحسين الثمار' });
-            if(currentSoil.pH < 6 || currentSoil.pH > 7) recs.push({ priority: 'high', title: '⚠️ مشكلة في pH', desc: currentSoil.pH < 6 ? 'أضف جير لرفع الحموضة' : 'أضف كبريت لخفض القلوية' });
-            if(recs.length === 0) recs.push({ priority: 'low', title: '✅ تربة ممتازة', desc: 'استمر في العناية العادية' });
-            let html = '';
-            recs.forEach(rec => {
-                html += `<div class="rec-item"><div class="rec-priority ${rec.priority}"></div><div class="rec-content"><h4>${rec.title}</h4><p>${rec.desc}</p></div></div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        async function simulateHannaAnalysis() {
+        // ========== محاكاة تحليل Hanna ==========
+        function simulateAnalysis() {
             showToast('📸 جاري تحليل الصورة...');
-            setTimeout(async () => {
+            setTimeout(() => {
                 currentSoil = {
                     N: Math.floor(Math.random() * 50) + 30,
                     P: Math.floor(Math.random() * 40) + 15,
@@ -487,126 +476,270 @@
                     pH: parseFloat((Math.random() * 2 + 5.5).toFixed(1))
                 };
                 updateSoilDisplay();
-                updateRecommendations();
-                if (currentUser) {
-                    await window.updateDoc(window.doc(db, 'users', currentUser.uid), { soilAnalysis: currentSoil });
-                    calculateAllYieldsWithPlants(userPlants);
-                }
                 showToast('✅ تم تحليل التربة بنجاح!');
-            }, 1500);
+                
+                if (currentUser) {
+                    currentUser.soilAnalysis = currentSoil;
+                    localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+                    let userIndex = users.findIndex(u => u.id === currentUser.id);
+                    if (userIndex !== -1) {
+                        users[userIndex] = currentUser;
+                        localStorage.setItem('agrismart_users', JSON.stringify(users));
+                    }
+                }
+            }, 2000);
         }
 
-        async function addNewPlant() {
-            if (!currentUser) { showToast('⚠️ الرجاء تسجيل الدخول أولاً'); return; }
-            let cropKey = document.getElementById('plantCrop').value;
-            let area = parseFloat(document.getElementById('plantAreaInput').value);
-            let date = document.getElementById('plantDate').value;
-            if (!area || area <= 0) { showToast('⚠️ الرجاء إدخال مساحة صحيحة'); return; }
-            let crop = cropDatabase[cropKey];
-            let newPlant = { id: Date.now().toString(), crop: cropKey, name: crop.name, area: area, date: date || new Date().toISOString().split('T')[0] };
-            userPlants.push(newPlant);
-            await window.updateDoc(window.doc(db, 'users', currentUser.uid), { plants: userPlants });
-            displayPlants(userPlants);
-            calculateAllYieldsWithPlants(userPlants);
-            showToast('✅ تم إضافة ' + crop.name + ' بنجاح');
-            document.getElementById('plantAreaInput').value = '';
+        // ========== إنشاء حساب جديد (مصحح) ==========
+        function signup() {
+            let name = document.getElementById('signupName').value.trim();
+            let email = document.getElementById('signupEmail').value.trim();
+            let password = document.getElementById('signupPassword').value;
+            let farm = document.getElementById('signupFarm').value.trim();
+            
+            // التحقق من صحة المدخلات
+            if (!name) {
+                showToast('⚠️ الرجاء إدخال الاسم الكامل');
+                return;
+            }
+            if (!email) {
+                showToast('⚠️ الرجاء إدخال البريد الإلكتروني');
+                return;
+            }
+            if (!password) {
+                showToast('⚠️ الرجاء إدخال كلمة المرور');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            
+            // التحقق من صيغة البريد الإلكتروني
+            let emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('⚠️ البريد الإلكتروني غير صحيح (مثال: name@example.com)');
+                return;
+            }
+            
+            // التحقق من عدم وجود البريد مسبقاً
+            if (users.find(u => u.email === email)) {
+                showToast('⚠️ هذا البريد الإلكتروني مسجل مسبقاً');
+                return;
+            }
+            
+            // إنشاء مستخدم جديد
+            let newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                farm: farm || 'مزرعتي',
+                plants: [],
+                soilAnalysis: currentSoil,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('agrismart_users', JSON.stringify(users));
+            
+            // تسجيل الدخول التلقائي
+            currentUser = newUser;
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            
+            document.getElementById('authModal').style.display = 'none';
+            init();
+            showToast('✅ تم إنشاء الحساب بنجاح! مرحباً بك ' + name);
+            
+            // تفريغ الحقول
+            document.getElementById('signupName').value = '';
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('signupFarm').value = '';
         }
 
-        async function deletePlant(plantId) {
+        // ========== تسجيل الدخول ==========
+        function login() {
+            let email = document.getElementById('loginEmail').value.trim();
+            let password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showToast('⚠️ الرجاء إدخال البريد وكلمة المرور');
+                return;
+            }
+            
+            let user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+                document.getElementById('authModal').style.display = 'none';
+                init();
+                showToast('✅ مرحباً بك ' + user.name);
+            } else {
+                showToast('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            }
+        }
+
+        // ========== تسجيل الخروج ==========
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('agrismart_current_user');
+            init();
+            showToast('تم تسجيل الخروج بنجاح');
+        }
+
+        // ========== إضافة زرع ==========
+        function addPlant() {
+            if (!currentUser) {
+                showToast('⚠️ الرجاء تسجيل الدخول أولاً');
+                return;
+            }
+            
+            let name = document.getElementById('plantName').value.trim();
+            let area = parseFloat(document.getElementById('plantArea').value);
+            
+            if (!name) {
+                showToast('⚠️ الرجاء إدخال نوع الزرع');
+                return;
+            }
+            if (!area || area <= 0) {
+                showToast('⚠️ الرجاء إدخال مساحة صحيحة');
+                return;
+            }
+            
+            let newPlant = {
+                id: Date.now(),
+                name: name,
+                area: area,
+                date: new Date().toLocaleDateString('ar-EG')
+            };
+            
+            if (!currentUser.plants) currentUser.plants = [];
+            currentUser.plants.push(newPlant);
+            
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            let userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('agrismart_users', JSON.stringify(users));
+            }
+            
+            document.getElementById('plantName').value = '';
+            document.getElementById('plantArea').value = '';
+            loadUserPlants();
+            showToast('✅ تم إضافة ' + name + ' بنجاح');
+        }
+
+        // ========== تحميل قائمة المزروعات ==========
+        function loadUserPlants() {
+            let container = document.getElementById('plantsList');
+            if (!currentUser || !currentUser.plants || currentUser.plants.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">📋 لا توجد مزروعات مضافة بعد</p>';
+                return;
+            }
+            
+            let html = '';
+            currentUser.plants.forEach(plant => {
+                html += `
+                    <div class="plant-item">
+                        <div>
+                            <strong>🌱 ${plant.name}</strong><br>
+                            <small>📏 ${plant.area} م² | 📅 ${plant.date}</small>
+                        </div>
+                        <button onclick="deletePlant(${plant.id})" style="background: none; border: none; color: #f44336; cursor: pointer; font-size: 1.2rem;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ========== حذف زرع ==========
+        function deletePlant(plantId) {
             if (!currentUser) return;
-            userPlants = userPlants.filter(p => p.id !== plantId);
-            await window.updateDoc(window.doc(db, 'users', currentUser.uid), { plants: userPlants });
-            displayPlants(userPlants);
-            calculateAllYieldsWithPlants(userPlants);
+            currentUser.plants = currentUser.plants.filter(p => p.id !== plantId);
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            let userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('agrismart_users', JSON.stringify(users));
+            }
+            loadUserPlants();
             showToast('🗑️ تم حذف الزرع');
         }
 
-        async function signupUser() {
-            let name = document.getElementById('signupName').value;
-            let email = document.getElementById('signupEmail').value;
-            let password = document.getElementById('signupPassword').value;
-            if (!name || !email || !password) { showToast('⚠️ الرجاء ملء جميع الحقول'); return; }
-            if (password.length < 6) { showToast('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
-            try {
-                const userCredential = await window.createUserWithEmailAndPassword(auth, email, password);
-                await window.setDoc(window.doc(db, 'users', userCredential.user.uid), {
-                    name: name,
-                    email: email,
-                    createdAt: new Date().toISOString(),
-                    plants: [],
-                    soilAnalysis: currentSoil
-                });
-                document.getElementById('authModal').style.display = 'none';
-                showToast('✅ تم إنشاء الحساب بنجاح');
-            } catch (error) {
-                showToast('❌ خطأ: ' + error.message);
-            }
-        }
-
-        async function loginUser() {
-            let email = document.getElementById('loginEmail').value;
-            let password = document.getElementById('loginPassword').value;
-            if (!email || !password) { showToast('⚠️ الرجاء إدخال البريد وكلمة المرور'); return; }
-            try {
-                await window.signInWithEmailAndPassword(auth, email, password);
-                document.getElementById('authModal').style.display = 'none';
-                showToast('✅ مرحباً بك');
-            } catch (error) {
-                showToast('❌ البريد أو كلمة المرور غير صحيحة');
-            }
-        }
-
-        async function logoutUser() {
-            await window.signOut(auth);
-            showToast('تم تسجيل الخروج');
-        }
-
-        function calculateAllYields() {
-            calculateAllYieldsWithPlants(userPlants);
-        }
-
+        // ========== فتح وإغلاق النوافذ ==========
         function openModal(type) {
-            document.getElementById('authModal').style.display = 'flex';
+            let modal = document.getElementById('authModal');
+            let loginForm = document.getElementById('loginForm');
+            let signupForm = document.getElementById('signupForm');
+            let modalTitle = document.getElementById('modalTitle');
+            let switchText = document.getElementById('switchText');
+            
             if (type === 'login') {
-                document.getElementById('modalTitle').innerText = 'تسجيل الدخول';
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('signupForm').style.display = 'none';
-                document.getElementById('switchText').innerHTML = 'ليس لديك حساب؟ <span style="color: var(--secondary); cursor: pointer;" onclick="toggleAuthMode()">إنشاء حساب</span>';
+                modalTitle.innerText = 'تسجيل الدخول';
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                switchText.innerHTML = 'ليس لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">إنشاء حساب</span>';
             } else {
-                document.getElementById('modalTitle').innerText = 'إنشاء حساب جديد';
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('signupForm').style.display = 'block';
-                document.getElementById('switchText').innerHTML = 'لديك حساب؟ <span style="color: var(--secondary); cursor: pointer;" onclick="toggleAuthMode()">تسجيل الدخول</span>';
+                modalTitle.innerText = 'إنشاء حساب جديد';
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                switchText.innerHTML = 'لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">تسجيل الدخول</span>';
             }
+            modal.style.display = 'flex';
         }
 
         function toggleAuthMode() {
-            if (document.getElementById('loginForm').style.display === 'block') openModal('signup');
-            else openModal('login');
+            if (document.getElementById('loginForm').style.display === 'block') {
+                openModal('signup');
+            } else {
+                openModal('login');
+            }
         }
 
-        function showToast(msg) {
+        function closeModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function showToast(message) {
             let toast = document.getElementById('toast');
-            toast.innerText = msg;
+            toast.innerText = message;
             toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
         }
 
-        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
+        // ========== إغلاق النافذة عند الضغط خارجها ==========
+        window.onclick = function(event) {
+            let modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // ========== تشغيل التطبيق ==========
+        init();
+
+        // جعل الدوال عامة للوصول إليها من HTML
         window.openModal = openModal;
-        window.loginUser = loginUser;
-        window.signupUser = signupUser;
-        window.logoutUser = logoutUser;
+        window.closeModal = closeModal;
+        window.login = login;
+        window.signup = signup;
+        window.logout = logout;
         window.toggleAuthMode = toggleAuthMode;
-        window.simulateHannaAnalysis = simulateHannaAnalysis;
-        window.addNewPlant = addNewPlant;
+        window.simulateAnalysis = simulateAnalysis;
+        window.addPlant = addPlant;
         window.deletePlant = deletePlant;
-        window.calculateAllYields = calculateAllYields;
         window.showToast = showToast;
         window.scrollToTop = scrollToTop;
-
-        document.getElementById('plantDate').value = new Date().toISOString().split('T')[0];
     </script>
 </body>
 </html>
