@@ -1,225 +1,598 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriSmart Pro | المساعد الزراعي الذكي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #1a5f3e; --secondary: #ff9800; --success: #4caf50;
-            --light: #f8fafc; --white: #ffffff; --shadow: 0 4px 12px rgba(0,0,0,0.1);
+// ============================================================
+// AgriSmart Pro - Advanced Crop Yield Calculator
+// Based on Liebig's Law of the Minimum
+// Supports: Arabic, English, French
+// ============================================================
+
+// ==================== 1. قاعدة بيانات المحاصيل (قابلة للتوسع) ====================
+const CropDatabase = {
+    // الخضر (Vegetables)
+    "Tomato": {
+        nameAr: "طماطم", nameEn: "Tomato", nameFr: "Tomate",
+        // احتياجات العناصر لإنتاج طن واحد (كغ/طن)
+        nutrientPerTon: { N: 2.5, P: 0.8, K: 3.5, Ca: 1.2, Mg: 0.4, S: 0.3 },
+        // المدى المثالي
+        idealPH: { min: 6.0, max: 6.8 },
+        idealEC: { min: 1.2, max: 2.0 },
+        // المردود الأقصى (طن/هكتار)
+        maxYieldTonPerHa: 80,
+        // معاملات خصم المردود عند الخروج عن المدى المثالي
+        penaltyPH: 0.25,    // 25% خصم لكل 0.5 درجة خارج المدى
+        penaltyEC: 0.15     // 15% خصم لكل 0.5 mS/cm خارج المدى
+    },
+    "Pepper": {
+        nameAr: "فلفل", nameEn: "Pepper", nameFr: "Poivron",
+        nutrientPerTon: { N: 3.0, P: 1.0, K: 4.0, Ca: 1.0, Mg: 0.5, S: 0.4 },
+        idealPH: { min: 6.2, max: 7.0 },
+        idealEC: { min: 1.0, max: 1.8 },
+        maxYieldTonPerHa: 60,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Cucumber": {
+        nameAr: "خيار", nameEn: "Cucumber", nameFr: "Concombre",
+        nutrientPerTon: { N: 2.8, P: 1.2, K: 4.2, Ca: 1.5, Mg: 0.6, S: 0.5 },
+        idealPH: { min: 6.0, max: 7.0 },
+        idealEC: { min: 1.2, max: 2.0 },
+        maxYieldTonPerHa: 100,
+        penaltyPH: 0.20,
+        penaltyEC: 0.15
+    },
+    "Potato": {
+        nameAr: "بطاطا", nameEn: "Potato", nameFr: "Pomme de terre",
+        nutrientPerTon: { N: 2.2, P: 0.6, K: 4.5, Ca: 0.8, Mg: 0.4, S: 0.3 },
+        idealPH: { min: 5.5, max: 6.5 },
+        idealEC: { min: 1.0, max: 1.8 },
+        maxYieldTonPerHa: 70,
+        penaltyPH: 0.30,
+        penaltyEC: 0.15
+    },
+    "Wheat": {
+        nameAr: "قمح", nameEn: "Wheat", nameFr: "Blé",
+        nutrientPerTon: { N: 2.0, P: 0.5, K: 2.5, Ca: 0.5, Mg: 0.3, S: 0.2 },
+        idealPH: { min: 6.0, max: 7.5 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 12,
+        penaltyPH: 0.20,
+        penaltyEC: 0.20
+    },
+    "Corn": {
+        nameAr: "ذرة", nameEn: "Corn", nameFr: "Maïs",
+        nutrientPerTon: { N: 2.5, P: 1.0, K: 3.0, Ca: 0.6, Mg: 0.4, S: 0.3 },
+        idealPH: { min: 5.8, max: 7.0 },
+        idealEC: { min: 1.0, max: 2.0 },
+        maxYieldTonPerHa: 15,
+        penaltyPH: 0.25,
+        penaltyEC: 0.20
+    },
+    "Apple": {
+        nameAr: "تفاح", nameEn: "Apple", nameFr: "Pomme",
+        nutrientPerTon: { N: 1.5, P: 0.5, K: 2.0, Ca: 1.0, Mg: 0.3, S: 0.2 },
+        idealPH: { min: 6.0, max: 7.0 },
+        idealEC: { min: 1.0, max: 1.8 },
+        maxYieldTonPerHa: 60,
+        penaltyPH: 0.20,
+        penaltyEC: 0.15
+    },
+    "Orange": {
+        nameAr: "برتقال", nameEn: "Orange", nameFr: "Orange",
+        nutrientPerTon: { N: 2.0, P: 0.6, K: 3.0, Ca: 1.0, Mg: 0.4, S: 0.3 },
+        idealPH: { min: 5.5, max: 6.5 },
+        idealEC: { min: 1.0, max: 1.8 },
+        maxYieldTonPerHa: 50,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Grape": {
+        nameAr: "عنب", nameEn: "Grape", nameFr: "Raisin",
+        nutrientPerTon: { N: 1.8, P: 0.6, K: 2.8, Ca: 1.0, Mg: 0.4, S: 0.3 },
+        idealPH: { min: 6.0, max: 7.0 },
+        idealEC: { min: 1.0, max: 1.8 },
+        maxYieldTonPerHa: 30,
+        penaltyPH: 0.20,
+        penaltyEC: 0.15
+    },
+    "Strawberry": {
+        nameAr: "فراولة", nameEn: "Strawberry", nameFr: "Fraise",
+        nutrientPerTon: { N: 2.5, P: 1.0, K: 3.5, Ca: 1.2, Mg: 0.5, S: 0.4 },
+        idealPH: { min: 5.5, max: 6.8 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 40,
+        penaltyPH: 0.30,
+        penaltyEC: 0.20
+    },
+    "Onion": {
+        nameAr: "بصل", nameEn: "Onion", nameFr: "Oignon",
+        nutrientPerTon: { N: 2.0, P: 0.8, K: 3.0, Ca: 0.8, Mg: 0.4, S: 0.5 },
+        idealPH: { min: 6.0, max: 6.8 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 60,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Carrot": {
+        nameAr: "جزر", nameEn: "Carrot", nameFr: "Carotte",
+        nutrientPerTon: { N: 2.2, P: 0.9, K: 3.8, Ca: 1.0, Mg: 0.5, S: 0.4 },
+        idealPH: { min: 6.0, max: 6.8 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 70,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Lettuce": {
+        nameAr: "خس", nameEn: "Lettuce", nameFr: "Laitue",
+        nutrientPerTon: { N: 2.5, P: 1.0, K: 4.0, Ca: 1.2, Mg: 0.5, S: 0.4 },
+        idealPH: { min: 6.0, max: 7.0 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 50,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Eggplant": {
+        nameAr: "باذنجان", nameEn: "Eggplant", nameFr: "Aubergine",
+        nutrientPerTon: { N: 2.8, P: 1.0, K: 4.2, Ca: 1.2, Mg: 0.6, S: 0.5 },
+        idealPH: { min: 6.0, max: 6.8 },
+        idealEC: { min: 1.2, max: 1.8 },
+        maxYieldTonPerHa: 60,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Watermelon": {
+        nameAr: "بطيخ", nameEn: "Watermelon", nameFr: "Pastèque",
+        nutrientPerTon: { N: 2.0, P: 1.0, K: 3.5, Ca: 1.0, Mg: 0.5, S: 0.4 },
+        idealPH: { min: 6.0, max: 6.8 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 70,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    },
+    "Melon": {
+        nameAr: "شمام", nameEn: "Melon", nameFr: "Melon",
+        nutrientPerTon: { N: 2.2, P: 1.0, K: 3.8, Ca: 1.0, Mg: 0.5, S: 0.4 },
+        idealPH: { min: 6.0, max: 6.8 },
+        idealEC: { min: 1.0, max: 1.6 },
+        maxYieldTonPerHa: 60,
+        penaltyPH: 0.25,
+        penaltyEC: 0.15
+    }
+};
+
+// ==================== 2. نظام الترجمة (i18n) ====================
+const i18n = {
+    ar: {
+        title: "نتائج تحليل التربة",
+        soilAnalysis: "📊 نتائج تحليل التربة",
+        cropName: "المحصول",
+        soilNutrients: "العناصر في التربة (ppm)",
+        soilPH: "درجة الحموضة (pH)",
+        soilEC: "الملوحة (EC mS/cm)",
+        yieldResult: "🌾 المردود المتوقع",
+        yieldValue: "المردود",
+        limitingFactor: "العامل المحدد",
+        limitingElement: "العنصر الأكثر نقصاً",
+        fertilizerNeeded: "📦 الأسمدة المطلوبة",
+        fertilizerAmount: "الكمية المطلوبة",
+        recommendations: "💡 توصيات لتحسين التربة",
+        ton: "طن",
+        kgPerHa: "كغ/هكتار",
+        optimalRange: "المدى المثالي",
+        currentValue: "القيمة الحالية",
+        status: "الحالة",
+        good: "جيد",
+        warning: "تحذير",
+        critical: "حرج"
+    },
+    en: {
+        title: "Soil Analysis Results",
+        soilAnalysis: "📊 Soil Analysis Results",
+        cropName: "Crop",
+        soilNutrients: "Soil Nutrients (ppm)",
+        soilPH: "pH Level",
+        soilEC: "EC (mS/cm)",
+        yieldResult: "🌾 Expected Yield",
+        yieldValue: "Yield",
+        limitingFactor: "Limiting Factor",
+        limitingElement: "Most Deficient Element",
+        fertilizerNeeded: "📦 Fertilizer Required",
+        fertilizerAmount: "Required Amount",
+        recommendations: "💡 Soil Improvement Recommendations",
+        ton: "ton",
+        kgPerHa: "kg/ha",
+        optimalRange: "Optimal Range",
+        currentValue: "Current Value",
+        status: "Status",
+        good: "Good",
+        warning: "Warning",
+        critical: "Critical"
+    },
+    fr: {
+        title: "Résultats d'Analyse du Sol",
+        soilAnalysis: "📊 Résultats d'Analyse du Sol",
+        cropName: "Culture",
+        soilNutrients: "Nutriments du sol (ppm)",
+        soilPH: "pH du sol",
+        soilEC: "CE (mS/cm)",
+        yieldResult: "🌾 Rendement attendu",
+        yieldValue: "Rendement",
+        limitingFactor: "Facteur limitant",
+        limitingElement: "Élément le plus déficient",
+        fertilizerNeeded: "📦 Engrais nécessaire",
+        fertilizerAmount: "Quantité requise",
+        recommendations: "💡 Recommandations d'amélioration",
+        ton: "tonne",
+        kgPerHa: "kg/ha",
+        optimalRange: "Plage optimale",
+        currentValue: "Valeur actuelle",
+        status: "Statut",
+        good: "Bon",
+        warning: "Attention",
+        critical: "Critique"
+    }
+};
+
+// ==================== 3. الخوارزميات الأساسية ====================
+
+/**
+ * تحويل PPM إلى كغ/هكتار
+ * @param {number} ppm - قيمة العنصر في التربة (جزء في المليون)
+ * @returns {number} - القيمة بالكيلوغرام لكل هكتار
+ */
+function ppmToKgPerHa(ppm) {
+    // معامل التحويل: 1 ppm = 2.4 كغ/هكتار (لعمق تربة 20 سم، كثافة 1.2 طن/م³)
+    return ppm * 2.4;
+}
+
+/**
+ * حساب الكمية المتاحة من العنصر في التربة
+ * @param {number} ppm - قيمة العنصر في التربة
+ * @returns {number} - الكمية المتاحة بالكغ/هكتار
+ */
+function availableNutrient(ppm) {
+    return ppmToKgPerHa(ppm);
+}
+
+/**
+ * حساب كمية العنصر المطلوبة لإنتاج محصول معين
+ * @param {object} crop - بيانات المحصول
+ * @param {number} targetYield - المردود المستهدف (طن/هكتار)
+ * @returns {object} - الكميات المطلوبة من كل عنصر (كغ/هكتار)
+ */
+function requiredNutrientsForYield(crop, targetYield) {
+    const required = {};
+    for (const [nutrient, perTon] of Object.entries(crop.nutrientPerTon)) {
+        required[nutrient] = perTon * targetYield;
+    }
+    return required;
+}
+
+/**
+ * حساب العناصر الناقصة حسب قانون الحد الأدنى لليبج
+ * @param {object} available - العناصر المتاحة في التربة (كغ/هكتار)
+ * @param {object} required - العناصر المطلوبة للمحصول (كغ/هكتار)
+ * @returns {object} - العناصر الناقصة والحد الأدنى
+ */
+function calculateDeficiencies(available, required) {
+    const deficiencies = {};
+    let minRatio = Infinity;
+    let limitingElement = null;
+    
+    for (const nutrient of Object.keys(required)) {
+        const availableKg = available[nutrient] || 0;
+        const requiredKg = required[nutrient];
+        const ratio = availableKg / requiredKg;
+        
+        if (ratio < minRatio) {
+            minRatio = ratio;
+            limitingElement = nutrient;
         }
-        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--light); color: #333; }
         
-        /* Navigation */
-        .navbar { background: var(--primary); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; sticky: top; }
-        .logo { font-size: 1.5rem; font-weight: 700; }
-        .logo span { color: var(--secondary); }
-        .lang-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; margin-left: 5px; }
-        .lang-btn.active { background: var(--secondary); }
-
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-        .card { background: var(--white); border-radius: 15px; padding: 2rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
-        .card-title { color: var(--primary); margin-bottom: 1.5rem; border-bottom: 2px solid var(--light); padding-bottom: 0.5rem; }
-
-        /* Form Styling */
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
-        .form-control { width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-        .form-control:focus { border-color: var(--primary); }
-
-        .btn-calc { background: var(--secondary); color: white; border: none; width: 100%; padding: 1rem; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-calc:hover { background: #e68a00; }
-
-        /* Results Styling */
-        .results-area { display: none; margin-top: 2rem; }
-        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .res-card { padding: 1.5rem; border-radius: 12px; text-align: center; color: white; }
-        .res-current { background: #607d8b; }
-        .res-potential { background: var(--success); }
-        .res-val { font-size: 2rem; font-weight: 800; display: block; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: white; }
-        th, td { padding: 1rem; border: 1px solid #eee; text-align: center; }
-        th { background: var(--primary); color: white; }
-
-        .soil-badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: white; }
-        .bg-good { background: #4caf50; } .bg-med { background: #ff9800; } .bg-low { background: #f44336; }
-        
-        .crop-list { position: absolute; background: white; border: 1px solid #ddd; width: 100%; z-index: 10; max-height: 200px; overflow-y: auto; display: none; }
-        .crop-item { padding: 0.8rem; cursor: pointer; border-bottom: 1px solid #eee; }
-        .crop-item:hover { background: #f1f1f1; }
-    </style>
-</head>
-<body>
-
-<div class="navbar">
-    <div class="logo"><i class="fas fa-seedling"></i> Agri<span>Smart</span></div>
-    <div>
-        <button class="lang-btn" onclick="setLang('ar')">AR</button>
-        <button class="lang-btn" onclick="setLang('fr')">FR</button>
-        <button class="lang-btn" onclick="setLang('en')">EN</button>
-    </div>
-</div>
-
-<div class="container">
-    <div class="card">
-        <h2 class="card-title" id="t-soil-analysis">تحليل التربة واختيار المحصول</h2>
-        
-        <div class="form-group" style="position: relative;">
-            <label id="t-crop-select">اختر المحصول</label>
-            <input type="text" id="cropInput" class="form-control" placeholder="ابحث عن محصول..." oninput="filterCrops()">
-            <div id="cropList" class="crop-list"></div>
-        </div>
-
-        <div class="grid-inputs">
-            <div class="form-group"><label>N (ppm)</label><input type="number" id="N" class="form-control" value="40"></div>
-            <div class="form-group"><label>P (ppm)</label><input type="number" id="P" class="form-control" value="25"></div>
-            <div class="form-group"><label>K (ppm)</label><input type="number" id="K" class="form-control" value="150"></div>
-            <div class="form-group"><label>pH</label><input type="number" step="0.1" id="pH" class="form-control" value="7.0"></div>
-            <div class="form-group"><label>EC (mS/cm)</label><input type="number" step="0.1" id="EC" class="form-control" value="1.2"></div>
-            <div class="form-group"><label id="t-area">المساحة (m²)</label><input type="number" id="area" class="form-control" value="1000"></div>
-        </div>
-
-        <button class="btn-calc" onclick="runEngine()" id="t-btn-calc">بدء التحليل والحساب</button>
-    </div>
-
-    <div id="resultsArea" class="results-area">
-        </div>
-</div>
-
-<script>
-    // 1. قاعدة بيانات المحاصيل (هيكل قابل للتوسع لـ 200 صنف)
-    const crops = {
-        "Tomato": { name: {ar:"طماطم", fr:"Tomate", en:"Tomato"}, nTon: 2.5, pTon: 1.2, kTon: 4.5, maxYieldHectare: 70, optPH: [6.0, 7.0], maxEC: 2.5 },
-        "Potato": { name: {ar:"بطاطس", fr:"Pomme de terre", en:"Potato"}, nTon: 3.5, pTon: 1.5, kTon: 5.5, maxYieldHectare: 45, optPH: [5.5, 6.5], maxEC: 2.0 },
-        "Wheat": { name: {ar:"قمح", fr:"Blé", en:"Wheat"}, nTon: 25, pTon: 12, kTon: 18, maxYieldHectare: 6, optPH: [6.0, 7.5], maxEC: 4.0 },
-        "Orange": { name: {ar:"برتقال", fr:"Orange", en:"Orange"}, nTon: 1.8, pTon: 0.5, kTon: 2.5, maxYieldHectare: 40, optPH: [6.0, 7.0], maxEC: 2.2 }
-    };
-
-    let currentLang = 'ar';
-    let selectedCropKey = "Tomato";
-
-    const ui = {
-        ar: { soil_analysis: "تحليل التربة واختيار المحصول", crop_select: "اختر المحصول", area: "المساحة (م²)", btn_calc: "بدء التحليل والحساب", current: "المردود الحالي", potential: "المردود المستهدف", ton: "طن", element: "العنصر", need: "الكمية المطلوبة (كجم)", status: "حالة التربة" },
-        fr: { soil_analysis: "Analyse du Sol", crop_select: "Choisir la culture", area: "Surface (m²)", btn_calc: "Calculer le rendement", current: "Rendement Actuel", potential: "Rendement Cible", ton: "Tonne", element: "Élément", need: "Besoin (kg)", status: "État du sol" },
-        en: { soil_analysis: "Soil Analysis", crop_select: "Select Crop", area: "Area (m²)", btn_calc: "Calculate Yield", current: "Current Yield", potential: "Target Yield", ton: "Ton", element: "Element", need: "Requirement (kg)", status: "Soil Status" }
-    };
-
-    function setLang(lang) {
-        currentLang = lang;
-        document.getElementById('t-soil-analysis').innerText = ui[lang].soil_analysis;
-        document.getElementById('t-crop-select').innerText = ui[lang].crop_select;
-        document.getElementById('t-area').innerText = ui[lang].area;
-        document.getElementById('t-btn-calc').innerText = ui[lang].btn_calc;
-        if(document.getElementById('resultsArea').style.display === 'block') runEngine();
-    }
-
-    function filterCrops() {
-        const val = document.getElementById('cropInput').value.toLowerCase();
-        const list = document.getElementById('cropList');
-        list.innerHTML = "";
-        list.style.display = "block";
-        Object.keys(crops).forEach(key => {
-            if(crops[key].name[currentLang].toLowerCase().includes(val)) {
-                const div = document.createElement('div');
-                div.className = "crop-item";
-                div.innerText = crops[key].name[currentLang];
-                div.onclick = () => {
-                    document.getElementById('cropInput').value = crops[key].name[currentLang];
-                    selectedCropKey = key;
-                    list.style.display = "none";
-                };
-                list.appendChild(div);
-            }
-        });
-    }
-
-    function runEngine() {
-        const crop = crops[selectedCropKey];
-        const soil = {
-            n: parseFloat(document.getElementById('N').value) || 0,
-            p: parseFloat(document.getElementById('P').value) || 0,
-            k: parseFloat(document.getElementById('K').value) || 0,
-            ph: parseFloat(document.getElementById('pH').value) || 7,
-            ec: parseFloat(document.getElementById('EC').value) || 0
-        };
-        const areaM2 = parseFloat(document.getElementById('area').value) || 1000;
-        const areaHectare = areaM2 / 10000;
-
-        // 1. تحويل ppm إلى كجم/هكتار (معامل 2.4 لعمق 20سم)
-        // الفسفور والبوتاسيوم لهما معامل إتاحة (Availability Factor)
-        const available = {
-            n: soil.n * 2.4,
-            p: soil.p * 2.4 * 0.25, // 25% متاح
-            k: soil.k * 2.4 * 0.50  // 50% متاح
-        };
-
-        // 2. معامل خفض المردود (الحموضة والملوحة)
-        let penalty = 1.0;
-        if(soil.ph < crop.optPH[0]) penalty -= (crop.optPH[0] - soil.ph) * 0.2;
-        if(soil.ph > crop.optPH[1]) penalty -= (soil.ph - crop.optPH[1]) * 0.2;
-        if(soil.ec > crop.maxEC) penalty -= (soil.ec - crop.maxEC) * 0.15;
-        penalty = Math.max(0.1, penalty);
-
-        // 3. قانون الحد الأدنى (Liebig's Law)
-        const potN = available.n / crop.nTon;
-        const potP = available.p / crop.pTon;
-        const potK = available.k / crop.kTon;
-        
-        let currentYieldPerHectare = Math.min(potN, potP, potK, crop.maxYieldHectare) * penalty;
-        let targetYieldPerHectare = crop.maxYieldHectare * penalty;
-
-        // 4. حساب الاحتياجات السمادية (مع مراعاة كفاءة السماد 50%)
-        const calcDeficit = (needed, avail) => Math.max(0, (needed - avail) * 2); 
-        const fertilizer = {
-            n: calcDeficit(targetYieldPerHectare * crop.nTon, available.n) * areaHectare,
-            p: calcDeficit(targetYieldPerHectare * crop.pTon, available.p) * areaHectare,
-            k: calcDeficit(targetYieldPerHectare * crop.kTon, available.k) * areaHectare
-        };
-
-        displayResults(currentYieldPerHectare * areaHectare, targetYieldPerHectare * areaHectare, fertilizer, soil, crop);
-    }
-
-    function displayResults(cur, tar, fert, soil, crop) {
-        const resDiv = document.getElementById('resultsArea');
-        resDiv.style.display = 'block';
-        const l = ui[currentLang];
-
-        resDiv.innerHTML = `
-            <div class="result-grid">
-                <div class="res-card res-current">
-                    <span>${l.current}</span>
-                    <strong class="res-val">${(cur/1000).toFixed(2)} ${l.ton}</strong>
-                </div>
-                <div class="res-card res-potential">
-                    <span>${l.potential}</span>
-                    <strong class="res-val">${(tar/1000).toFixed(2)} ${l.ton}</strong>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top:1.5rem">
-                <h3>${l.need}</h3>
-                <table>
-                    <thead><tr><th>${l.element}</th><th>${l.need}</th><th>Source</th></tr></thead>
-                    <tbody>
-                        <tr><td>N</td><td>${fert.n.toFixed(1)}</td><td>Urea 46%</td></tr>
-                        <tr><td>P</td><td>${fert.p.toFixed(1)}</td><td>DAP / TSP</td></tr>
-                        <tr><td>K</td><td>${fert.k.toFixed(1)}</td><td>Sulfate de Potassium</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        `;
-        window.scrollTo({ top: resDiv.offsetTop - 100, behavior: 'smooth' });
+        if (availableKg < requiredKg) {
+            deficiencies[nutrient] = requiredKg - availableKg;
+        } else {
+            deficiencies[nutrient] = 0;
+        }
     }
     
-    // إغلاق قائمة المحاصيل عند الضغط خارجها
-    window.onclick = (e) => { if(!e.target.matches('#cropInput')) document.getElementById('cropList').style.display='none'; }
-</script>
+    return { deficiencies, limitingElement, limitingRatio: minRatio };
+}
 
-</body>
-</html>
+/**
+ * حساب خصم المردود بسبب pH و EC
+ * @param {object} crop - بيانات المحصول
+ * @param {number} pH - قيمة pH الحالية
+ * @param {number} EC - قيمة EC الحالية (mS/cm)
+ * @returns {number} - نسبة الخصم (0-1)
+ */
+function calculatePenalty(crop, pH, EC) {
+    let penalty = 0;
+    
+    // خصم pH
+    if (pH < crop.idealPH.min) {
+        const deviation = crop.idealPH.min - pH;
+        penalty += deviation * crop.penaltyPH;
+    } else if (pH > crop.idealPH.max) {
+        const deviation = pH - crop.idealPH.max;
+        penalty += deviation * crop.penaltyPH;
+    }
+    
+    // خصم EC
+    if (EC < crop.idealEC.min) {
+        const deviation = crop.idealEC.min - EC;
+        penalty += deviation * crop.penaltyEC;
+    } else if (EC > crop.idealEC.max) {
+        const deviation = EC - crop.idealEC.max;
+        penalty += deviation * crop.penaltyEC;
+    }
+    
+    return Math.min(penalty, 0.8); // الحد الأقصى 80% خصم
+}
+
+/**
+ * حساب المردود المتوقع
+ * @param {object} crop - بيانات المحصول
+ * @param {number} limitingRatio - نسبة العنصر الأكثر نقصاً
+ * @param {number} penalty - نسبة الخصم بسبب pH/EC
+ * @returns {number} - المردود المتوقع (طن/هكتار)
+ */
+function calculateExpectedYield(crop, limitingRatio, penalty) {
+    const baseYield = crop.maxYieldTonPerHa;
+    const yieldFactor = Math.min(limitingRatio, 1);
+    const finalFactor = yieldFactor * (1 - penalty);
+    return baseYield * finalFactor;
+}
+
+// ==================== 4. الدالة الرئيسية لحساب المردودية ====================
+
+/**
+ * حساب المردودية الكامل للمحصول بناءً على تحليل التربة
+ * @param {string} cropKey - مفتاح المحصول (مثل "Tomato")
+ * @param {object} soilAnalysis - بيانات تحليل التربة
+ * @param {number} soilAnalysis.N - النيتروجين (ppm)
+ * @param {number} soilAnalysis.P - الفوسفور (ppm)
+ * @param {number} soilAnalysis.K - البوتاسيوم (ppm)
+ * @param {number} soilAnalysis.Ca - الكالسيوم (ppm) - اختياري
+ * @param {number} soilAnalysis.Mg - المغنيسيوم (ppm) - اختياري
+ * @param {number} soilAnalysis.S - الكبريت (ppm) - اختياري
+ * @param {number} soilAnalysis.pH - درجة الحموضة
+ * @param {number} soilAnalysis.EC - الملوحة (mS/cm)
+ * @param {string} language - اللغة ("ar", "en", "fr")
+ * @returns {object} - النتائج الكاملة
+ */
+function calculateYield(cropKey, soilAnalysis, language = "ar") {
+    // التحقق من وجود المحصول
+    const crop = CropDatabase[cropKey];
+    if (!crop) {
+        return { error: `Crop "${cropKey}" not found in database` };
+    }
+    
+    const lang = language;
+    const t = i18n[lang];
+    
+    // 1. تحويل PPM إلى كغ/هكتار
+    const availableNutrients = {
+        N: availableNutrient(soilAnalysis.N || 0),
+        P: availableNutrient(soilAnalysis.P || 0),
+        K: availableNutrient(soilAnalysis.K || 0),
+        Ca: availableNutrient(soilAnalysis.Ca || 0),
+        Mg: availableNutrient(soilAnalysis.Mg || 0),
+        S: availableNutrient(soilAnalysis.S || 0)
+    };
+    
+    // 2. حساب المردود المستهدف (نستخدم المردود الأقصى كهدف أولي)
+    const targetYield = crop.maxYieldTonPerHa;
+    const requiredNutrients = requiredNutrientsForYield(crop, targetYield);
+    
+    // 3. حساب العناصر الناقصة (قانون ليبج)
+    const { deficiencies, limitingElement, limitingRatio } = calculateDeficiencies(availableNutrients, requiredNutrients);
+    
+    // 4. حساب خصم pH و EC
+    const penalty = calculatePenalty(crop, soilAnalysis.pH, soilAnalysis.EC);
+    
+    // 5. حساب المردود المتوقع
+    const expectedYield = calculateExpectedYield(crop, limitingRatio, penalty);
+    
+    // 6. إعادة حساب العناصر الناقصة بناءً على المردود الفعلي
+    const actualRequired = requiredNutrientsForYield(crop, expectedYield);
+    const finalDeficiencies = {};
+    for (const nutrient of Object.keys(actualRequired)) {
+        const available = availableNutrients[nutrient] || 0;
+        const required = actualRequired[nutrient];
+        if (available < required) {
+            finalDeficiencies[nutrient] = Math.ceil(required - available);
+        } else {
+            finalDeficiencies[nutrient] = 0;
+        }
+    }
+    
+    // 7. حساب كمية السماد المطلوبة (بالكيلوغرام لكل هكتار)
+    const fertilizerRecommendations = {};
+    if (finalDeficiencies.N > 0) fertilizerRecommendations.N = finalDeficiencies.N;
+    if (finalDeficiencies.P > 0) fertilizerRecommendations.P = finalDeficiencies.P;
+    if (finalDeficiencies.K > 0) fertilizerRecommendations.K = finalDeficiencies.K;
+    
+    // 8. توصيات لتحسين التربة
+    const recommendations = [];
+    
+    // توصيات pH
+    if (soilAnalysis.pH < crop.idealPH.min) {
+        const limeNeeded = (crop.idealPH.min - soilAnalysis.pH) * 2.5;
+        recommendations.push({
+            type: "pH",
+            issue: `pH منخفض (${soilAnalysis.pH})`,
+            solution: `أضف ${limeNeeded.toFixed(1)} طن/هكتار من الجير الزراعي`,
+            severity: "high"
+        });
+    } else if (soilAnalysis.pH > crop.idealPH.max) {
+        const sulfurNeeded = (soilAnalysis.pH - crop.idealPH.max) * 0.5;
+        recommendations.push({
+            type: "pH",
+            issue: `pH مرتفع (${soilAnalysis.pH})`,
+            solution: `أضف ${sulfurNeeded.toFixed(1)} طن/هكتار من الكبريت الزراعي`,
+            severity: "high"
+        });
+    }
+    
+    // توصيات EC
+    if (soilAnalysis.EC < crop.idealEC.min) {
+        recommendations.push({
+            type: "EC",
+            issue: `ملوحة منخفضة (${soilAnalysis.EC} mS/cm)`,
+            solution: "أضف أسمدة عضوية لتحسين النشاط الميكروبي",
+            severity: "medium"
+        });
+    } else if (soilAnalysis.EC > crop.idealEC.max) {
+        const leachingWater = (soilAnalysis.EC - crop.idealEC.max) * 500;
+        recommendations.push({
+            type: "EC",
+            issue: `ملوحة مرتفعة (${soilAnalysis.EC} mS/cm)`,
+            solution: `غسل التربة بـ ${leachingWater.toFixed(0)} م³/هكتار من الماء العذب`,
+            severity: "high"
+        });
+    }
+    
+    // توصيات العناصر الناقصة
+    if (finalDeficiencies.N > 0) {
+        recommendations.push({
+            type: "N",
+            issue: `نقص نيتروجين (${finalDeficiencies.N} كغ/هكتار)`,
+            solution: `أضف ${Math.ceil(finalDeficiencies.N / 0.46)} كغ/هكتار من اليوريا (46% N)`,
+            severity: finalDeficiencies.N > 50 ? "high" : "medium"
+        });
+    }
+    if (finalDeficiencies.P > 0) {
+        recommendations.push({
+            type: "P",
+            issue: `نقص فوسفور (${finalDeficiencies.P} كغ/هكتار)`,
+            solution: `أضف ${Math.ceil(finalDeficiencies.P / 0.18)} كغ/هكتار من سوبر فوسفات (18% P₂O₅)`,
+            severity: finalDeficiencies.P > 30 ? "high" : "medium"
+        });
+    }
+    if (finalDeficiencies.K > 0) {
+        recommendations.push({
+            type: "K",
+            issue: `نقص بوتاسيوم (${finalDeficiencies.K} كغ/هكتار)`,
+            solution: `أضف ${Math.ceil(finalDeficiencies.K / 0.5)} كغ/هكتار من كبريتات البوتاسيوم (50% K₂O)`,
+            severity: finalDeficiencies.K > 50 ? "high" : "medium"
+        });
+    }
+    
+    // 9. إرجاع النتائج
+    return {
+        success: true,
+        crop: {
+            key: cropKey,
+            nameAr: crop.nameAr,
+            nameEn: crop.nameEn,
+            nameFr: crop.nameFr
+        },
+        soilAnalysis: {
+            nutrients: {
+                N: { ppm: soilAnalysis.N, kgHa: availableNutrients.N },
+                P: { ppm: soilAnalysis.P, kgHa: availableNutrients.P },
+                K: { ppm: soilAnalysis.K, kgHa: availableNutrients.K },
+                Ca: { ppm: soilAnalysis.Ca, kgHa: availableNutrients.Ca },
+                Mg: { ppm: soilAnalysis.Mg, kgHa: availableNutrients.Mg },
+                S: { ppm: soilAnalysis.S, kgHa: availableNutrients.S }
+            },
+            pH: soilAnalysis.pH,
+            EC: soilAnalysis.EC
+        },
+        yield: {
+            expected: expectedYield.toFixed(1),
+            maxPotential: crop.maxYieldTonPerHa,
+            limitingFactor: limitingElement,
+            limitingRatio: limitingRatio.toFixed(2),
+            penalty: (penalty * 100).toFixed(1)
+        },
+        deficiencies: finalDeficiencies,
+        fertilizer: fertilizerRecommendations,
+        recommendations: recommendations,
+        i18n: t
+    };
+}
+
+// ==================== 5. مثال توضيحي للاستخدام ====================
+
+// بيانات تحليل التربة
+const soilSample = {
+    N: 45,      // ppm
+    P: 18,      // ppm
+    K: 85,      // ppm
+    Ca: 280,    // ppm
+    Mg: 45,     // ppm
+    S: 12,      // ppm
+    pH: 6.2,
+    EC: 1.4
+};
+
+// حساب المردودية بالعربية
+const resultAr = calculateYield("Tomato", soilSample, "ar");
+console.log("=== النتائج بالعربية ===");
+console.log(resultAr);
+
+// حساب المردودية بالإنجليزية
+const resultEn = calculateYield("Tomato", soilSample, "en");
+console.log("=== Results in English ===");
+console.log(resultEn);
+
+// حساب المردودية بالفرنسية
+const resultFr = calculateYield("Tomato", soilSample, "fr");
+console.log("=== Résultats en Français ===");
+console.log(resultFr);
+
+// ==================== 6. دالة لتوليد نص منسق للعرض ====================
+
+function formatResults(result) {
+    if (!result.success) return `Error: ${result.error}`;
+    
+    const t = result.i18n;
+    let output = `
+╔══════════════════════════════════════════════════════════════╗
+║              ${t.soilAnalysis}                    ║
+╠══════════════════════════════════════════════════════════════╣
+║ ${t.cropName}: ${result.crop.nameAr} (${result.crop.nameEn})                    ║
+╠══════════════════════════════════════════════════════════════╣
+║ 📊 ${t.soilNutrients}:                                         ║
+`;
+    
+    for (const [nutrient, data] of Object.entries(result.soilAnalysis.nutrients)) {
+        output += `║   ${nutrient}: ${data.ppm} ppm (${data.kgHa.toFixed(1)} ${t.kgPerHa})${' '.repeat(30 - nutrient.length - data.ppm.toString().length - data.kgHa.toFixed(1).length)}║\n`;
+    }
+    
+    output += `║                                                              ║
+║ ⚗️ ${t.soilPH}: ${result.soilAnalysis.pH} (${t.optimalRange}: 6.0-6.8)                    ║
+║ 💧 ${t.soilEC}: ${result.soilAnalysis.EC} mS/cm (${t.optimalRange}: 1.2-2.0)               ║
+╠══════════════════════════════════════════════════════════════╣
+║ 🌾 ${t.yieldResult}:                                            ║
+║    ${t.yieldValue}: ${result.yield.expected} ${t.ton}/ha (Max: ${result.yield.maxPotential} ${t.ton}/ha)║
+║    ${t.limitingFactor}: ${result.yield.limitingFactor} (Ratio: ${result.yield.limitingRatio})                  ║
+║    Penalty: ${result.yield.penalty}%                               ║
+╠══════════════════════════════════════════════════════════════╣
+║ 📦 ${t.fertilizerNeeded}:                                        ║
+`;
+    
+    for (const [nutrient, amount] of Object.entries(result.fertilizer)) {
+        if (amount > 0) {
+            output += `║    ${nutrient}: ${amount} ${t.kgPerHa}${' '.repeat(50 - nutrient.length - amount.toString().length)}║\n`;
+        }
+    }
+    
+    output += `╠══════════════════════════════════════════════════════════════╣
+║ 💡 ${t.recommendations}:                                         ║
+`;
+    
+    for (const rec of result.recommendations) {
+        output += `║    • ${rec.solution.substring(0, 55)}${' '.repeat(55 - rec.solution.length)}║\n`;
+    }
+    
+    output += `╚══════════════════════════════════════════════════════════════╝`;
+    
+    return output;
+}
+
+// ==================== 7. تصدير الوحدات (للاستخدام في المشروع) ====================
+
+// تصدير الدوال للاستخدام في المتصفح أو Node.js
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { CropDatabase, calculateYield, formatResults, ppmToKgPerHa };
+}
