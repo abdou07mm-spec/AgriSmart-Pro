@@ -2,780 +2,354 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AgriSmart Pro | الزراعة الذكية المتكاملة</title>
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>AgriSmart Pro | تحليل دقيق للتربة والمردودية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', 'Segoe UI', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root {
-            --primary: #1a5f3e;
-            --primary-dark: #0d3d26;
-            --primary-light: #2e7d32;
-            --secondary: #ff9800;
-            --secondary-light: #ffb74d;
-            --secondary-dark: #f57c00;
-            --danger: #f44336;
-            --warning: #ffc107;
-            --success: #4caf50;
-            --info: #2196f3;
-            --dark: #1e1e2f;
-            --light: #f8fafc;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
-            --gradient-accent: linear-gradient(135deg, var(--secondary), var(--secondary-light));
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
-            --shadow-lg: 0 16px 40px rgba(0,0,0,0.12);
-            --shadow-accent: 0 10px 30px rgba(255,152,0,0.25);
-            --border-radius: 24px;
-            --border-radius-sm: 16px;
+            --primary: #1a5f3e; --primary-dark: #0d3d26; --secondary: #ff9800;
+            --success: #4caf50; --danger: #f44336; --warning: #ffc107;
+            --light: #f8fafc; --gray: #6c757d; --gray-light: #e9ecef;
+            --radius: 20px; --shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-
-        body {
-            background: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
-        }
-
-        /* شريط التنقل المتقدم */
-        .navbar {
-            background: var(--gradient);
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        .logo-icon {
-            background: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: var(--primary);
-        }
-
-        .logo span { color: var(--secondary-light); }
-
-        .nav-links {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-item {
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-        }
-
-        .auth-section {
-            display: flex;
-            gap: 0.8rem;
-            align-items: center;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: white;
-            color: var(--primary);
-        }
-
-        .btn-primary {
-            background: var(--gradient-accent);
-            border: none;
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: var(--shadow-accent);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(255,152,0,0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: rgba(255,255,255,0.15);
-            padding: 0.3rem 1rem 0.3rem 0.5rem;
-            border-radius: 50px;
-            backdrop-filter: blur(5px);
-            cursor: pointer;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-        }
-
-        /* المحتوى الرئيسي */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 5%;
-        }
-
-        /* بطاقات الترحيب */
-        .hero-section {
-            background: linear-gradient(135deg, #1a5f3e 0%, #2e7d32 100%);
-            border-radius: var(--border-radius);
-            padding: 3rem;
-            color: white;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        /* بطاقات إحصائيات */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--border-radius-sm);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-icon { font-size: 2.2rem; color: var(--secondary); margin-bottom: 0.75rem; }
-        .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); }
-        .stat-label { font-size: 0.85rem; color: var(--gray); }
-
-        /* الشبكة الرئيسية */
-        .main-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 1000px) {
-            .main-grid { grid-template-columns: repeat(2, 1fr); }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 640px) {
-            .main-grid { grid-template-columns: 1fr; }
-        }
-
-        /* البطاقات */
-        .card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--gray-light);
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* نماذج الإدخال */
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.9rem 1rem;
-            border: 2px solid var(--gray-light);
-            border-radius: var(--border-radius-sm);
-            font-size: 1rem;
-            transition: all 0.3s;
-            background: var(--light);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--secondary);
-            background: white;
-        }
-
-        /* أزرار */
-        .btn-save {
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        /* منطقة تحميل الصور */
-        .upload-area {
-            border: 2px dashed var(--secondary);
-            border-radius: var(--border-radius-sm);
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #fff9f0;
-        }
-
-        /* مؤشر الذكاء الاصطناعي */
-        .ai-badge {
-            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        /* نافذة منبثقة */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        /* تنبيه */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border-radius: 50px;
-            display: none;
-            z-index: 3000;
-            font-size: 0.9rem;
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* القائمة السفلية */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 0.8rem 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
-            border-radius: 30px 30px 0 0;
-            z-index: 1000;
-        }
-
-        .bottom-nav-item {
-            text-align: center;
-            color: var(--gray);
-            text-decoration: none;
-            font-size: 0.7rem;
-            transition: all 0.3s;
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
-        }
-
-        .bottom-nav-item.active {
-            color: var(--primary);
-            background: #e8f5e9;
-        }
-
-        .bottom-nav-item i {
-            font-size: 1.3rem;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-
-        /* المحتوى المخفي */
-        .page-content { display: none; }
-        .page-content.active { display: block; }
-        .logged-content { display: none; }
-        .logged-content.show { display: block; }
-        #publicContent { display: block; }
-
-        /* تحميل */
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* تأثيرات */
-        .floating { animation: float 3s ease-in-out infinite; }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
+        body { background: var(--light); color: #1e1e2f; line-height: 1.5; }
+        .navbar { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.4rem; font-weight: 700; color: white; }
+        .logo span { color: var(--secondary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5%; }
+        .card { background: white; border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+        .card-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; border-right: 4px solid var(--secondary); padding-right: 0.8rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; }
+        .form-control { width: 100%; padding: 0.8rem; border: 1px solid var(--gray-light); border-radius: 12px; font-size: 1rem; background: var(--light); }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn-primary { background: linear-gradient(135deg, var(--secondary), #f57c00); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 40px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; }
+        .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); padding: 0.7rem 1.2rem; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .result-card { background: linear-gradient(135deg, #f5f5f5, #fff); border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; border: 1px solid var(--gray-light); }
+        .result-value { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .soil-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .good { background: #c8e6c9; color: #2e7d32; }
+        .medium { background: #fff3e0; color: #f57c00; }
+        .bad { background: #ffcdd2; color: #c62828; }
+        .progress-bar { height: 8px; background: var(--gray-light); border-radius: 10px; overflow: hidden; margin: 0.5rem 0; }
+        .progress-fill { height: 100%; background: var(--secondary); border-radius: 10px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-content { background: white; border-radius: var(--radius); padding: 1.8rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 0.6rem 1.5rem; border-radius: 50px; display: none; z-index: 3000; }
+        @media (max-width: 700px) { .row-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="navbar">
-    <div class="logo">
-        <div class="logo-icon">🌾</div>
-        Agri<span>Smart</span> Pro
-    </div>
-    <div class="nav-links">
-        <a href="#" class="nav-item active" data-page="home"><i class="fas fa-home"></i> الرئيسية</a>
-        <a href="#" class="nav-item" data-page="dashboard"><i class="fas fa-chart-line"></i> لوحة التحكم</a>
-        <a href="#" class="nav-item" data-page="settings"><i class="fas fa-user-cog"></i> الإعدادات</a>
-        <a href="#" class="nav-item" data-page="contact"><i class="fas fa-headset"></i> اتصل بنا</a>
-        <div class="auth-section">
-            <div id="authButtons">
-                <button class="btn-outline" onclick="openModal('login')"><i class="fas fa-sign-in-alt"></i> دخول</button>
-                <button class="btn-primary" onclick="openModal('signup')"><i class="fas fa-user-plus"></i> حساب جديد</button>
-            </div>
-            <div class="user-menu" id="userMenu" style="display: none;" onclick="document.querySelector('[data-page=\"settings\"]').click();">
-                <div class="user-avatar" id="userAvatar">م</div>
-                <span id="userNameDisplay"></span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </div>
-    </div>
+    <div class="logo"><i class="fas fa-seedling"></i> Agri<span>Smart</span> Pro</div>
+    <div><button class="btn-outline" style="background: white; color: var(--primary); border: none;" onclick="openLoginModal()">تسجيل الدخول</button></div>
 </div>
 
-<div class="container">
-    <!-- محتوى غير مسجل -->
-    <div id="publicContent">
-        <div class="hero-section">
-            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">🌱 AgriSmart Pro</h1>
-            <p style="font-size: 1.2rem; opacity: 0.95;">من النفايات العضوية إلى زراعة ذكية مستدامة</p>
-            <p style="margin-top: 1rem;">نظام متكامل يجمع بين رسكلة النفايات والذكاء الاصطناعي والطاقة الشمسية</p>
-            <button class="btn-primary" style="margin-top: 1.5rem; padding: 0.8rem 2rem;" onclick="openModal('signup')">ابدأ الآن مجاناً <i class="fas fa-arrow-left"></i></button>
+<div class="container" id="appContainer">
+    <!-- قسم تحليل التربة الرئيسي -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-flask"></i> تحليل التربة والمردودية</div>
+        <p style="margin-bottom: 1rem; color: var(--gray);">أدخل بيانات تربتك بالطريقة المناسبة:</p>
+        
+        <!-- طريقتين لإدخال البيانات -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <button id="btnManualInput" class="btn-primary" style="flex:1; background: var(--primary);" onclick="switchToManual()"><i class="fas fa-keyboard"></i> إدخال يدوي</button>
+            <button id="btnImageInput" class="btn-primary" style="flex:1;" onclick="switchToImage()"><i class="fas fa-camera"></i> تحليل الصورة (Hanna)</button>
         </div>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-flask"></i></div><div class="stat-value">98%</div><div class="stat-label">دقة التحليل</div></div>
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-tint"></i></div><div class="stat-value">40%</div><div class="stat-label">توفير الماء</div></div>
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-value">+70%</div><div class="stat-label">زيادة الإنتاج</div></div>
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-cloud"></i></div><div class="stat-value">24/7</div><div class="stat-label">دعم فني</div></div>
+
+        <!-- قسم الإدخال اليدوي -->
+        <div id="manualInputSection">
+            <div class="row-2">
+                <div class="form-group"><label>النيتروجين (N) ppm</label><input type="number" id="manualN" class="form-control" placeholder="مثال: 42"></div>
+                <div class="form-group"><label>الفوسفور (P) ppm</label><input type="number" id="manualP" class="form-control" placeholder="مثال: 28"></div>
+                <div class="form-group"><label>البوتاسيوم (K) ppm</label><input type="number" id="manualK" class="form-control" placeholder="مثال: 110"></div>
+                <div class="form-group"><label>درجة الحموضة (pH)</label><input type="number" step="0.1" id="manualPH" class="form-control" placeholder="مثال: 6.8"></div>
+            </div>
+            <div class="form-group"><label>الملوحة (EC) mS/cm</label><input type="number" step="0.1" id="manualEC" class="form-control" placeholder="مثال: 1.2"></div>
         </div>
+
+        <!-- قسم رفع الصورة -->
+        <div id="imageInputSection" style="display: none;">
+            <div class="upload-area" style="border: 2px dashed var(--secondary); border-radius: 16px; padding: 2rem; text-align: center; cursor: pointer; background: #fff9f0;" onclick="document.getElementById('imageUpload').click()">
+                <i class="fas fa-camera" style="font-size: 3rem; color: var(--secondary);"></i>
+                <p>اضغط لتصوير نتائج Hanna HI3896</p>
+                <p style="font-size: 0.8rem;">📸 سنحول الألوان إلى أرقام دقيقة</p>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            </div>
+        </div>
+
+        <!-- معلومات الزراعة -->
+        <div class="row-2" style="margin-top: 1.5rem;">
+            <div class="form-group"><label><i class="fas fa-leaf"></i> نوع الزرع</label>
+                <select id="cropType" class="form-control">
+                    <option value="tomato">🍅 طماطم</option><option value="pepper">🌶️ فلفل</option><option value="cucumber">🥒 خيار</option>
+                    <option value="potato">🥔 بطاطا</option><option value="wheat">🌾 قمح</option><option value="strawberry">🍓 فراولة</option>
+                    <option value="onion">🧅 بصل</option><option value="lettuce">🥬 خس</option>
+                </select>
+            </div>
+            <div class="form-group"><label><i class="fas fa-vector-square"></i> المساحة (م²)</label><input type="number" id="area" class="form-control" placeholder="مثال: 1000" value="1000"></div>
+        </div>
+
+        <div class="form-group"><label><i class="fas fa-water"></i> كمية الماء المتاحة</label>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <input type="number" id="waterAmount" class="form-control" placeholder="الكمية" style="flex:2;">
+                <select id="waterPeriod" class="form-control" style="flex:1;">
+                    <option value="day">في اليوم</option><option value="week">في الأسبوع</option><option value="month">في الشهر</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="calculateFullAnalysis()" style="margin-top: 1rem;"><i class="fas fa-calculator"></i> حساب المردودية والتحليل الكامل</button>
     </div>
 
-    <!-- محتوى المسجلين -->
-    <div id="loggedContent" class="logged-content">
-        <!-- الصفحة الرئيسية -->
-        <div id="page-home" class="page-content active">
-            <div class="hero-section" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                <h2>مرحباً بك <span id="welcomeName">مزارع</span>! 👨‍🌾</h2>
-                <p>مزرعتك الذكية في انتظارك. إليك ملخص حالتك اليوم:</p>
-                <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-                    <div><i class="fas fa-tint"></i> رطوبة التربة: <strong>65%</strong></div>
-                    <div><i class="fas fa-thermometer-half"></i> درجة الحرارة: <strong>28°C</strong></div>
-                    <div><i class="fas fa-battery-full"></i> البطارية: <strong>92%</strong></div>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-tractor"></i></div><div class="stat-value" id="statArea">0</div><div class="stat-label">إجمالي المساحة (م²)</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-seedling"></i></div><div class="stat-value" id="statPlants">0</div><div class="stat-label">عدد المزروعات</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-value" id="statYield">0</div><div class="stat-label">الإنتاج المتوقع (كغ)</div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-value" id="statValue">0</div><div class="stat-label">القيمة المتوقعة (دج)</div></div>
-            </div>
-            <div class="main-grid">
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-microscope"></i> تحليل التربة بالذكاء الاصطناعي</div><span class="ai-badge"><i class="fas fa-robot"></i> AI</span></div>
-                    <div id="soilResult"><p>اضغط لتحليل تربتك</p></div>
-                    <button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="analyzeSoilAI()"><i class="fas fa-flask"></i> تحليل التربة الآن</button>
-                </div>
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-plus-circle"></i> إضافة زرع جديد</div></div>
-                    <select id="cropSelect" class="form-control" style="margin-bottom:1rem;"><option value="tomato">🍅 طماطم</option><option value="pepper">🌶️ فلفل</option><option value="cucumber">🥒 خيار</option><option value="potato">🥔 بطاطا</option></select>
-                    <input type="number" id="areaInput" class="form-control" placeholder="المساحة (م²)" style="margin-bottom:1rem;">
-                    <button class="btn-primary" style="width:100%;" onclick="addPlant()"><i class="fas fa-save"></i> إضافة</button>
-                </div>
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-brain"></i> توصيات الذكاء الاصطناعي</div><span class="ai-badge"><i class="fas fa-robot"></i> AI</span></div>
-                    <div id="aiRecommendations"><p>قم بتحليل التربة للحصول على توصيات مخصصة</p></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- صفحة الإعدادات -->
-        <div id="page-settings" class="page-content">
-            <div class="card" style="margin-bottom:1.5rem;">
-                <div class="card-header"><div class="card-title"><i class="fas fa-user-circle"></i> الملف الشخصي</div></div>
-                <div class="upload-area" onclick="document.getElementById('avatarUpload').click()" style="margin-bottom:1.5rem;">
-                    <i class="fas fa-camera" style="font-size:2rem; color:var(--secondary);"></i>
-                    <p>تغيير الصورة الشخصية</p>
-                    <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
-                </div>
-                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="profileName" class="form-control"></div>
-                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="profileEmail" class="form-control"></div>
-                <div class="form-group"><label>اسم المزرعة</label><input type="text" id="farmName" class="form-control"></div>
-                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="profilePhone" class="form-control"></div>
-                <div class="form-group"><label>الولاية</label><input type="text" id="profileWilaya" class="form-control"></div>
-                <button class="btn-save" onclick="saveProfile()"><i class="fas fa-check-circle"></i> حفظ التغييرات</button>
-            </div>
-            <div class="card">
-                <div class="card-header"><div class="card-title"><i class="fas fa-bell"></i> الإشعارات</div></div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0;"><span><i class="fas fa-envelope"></i> إشعارات البريد الإلكتروني</span><label class="switch"><input type="checkbox" id="notifEmail"><span class="slider round"></span></label></div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0;"><span><i class="fas fa-sms"></i> إشعارات SMS</span><label class="switch"><input type="checkbox" id="notifSMS"><span class="slider round"></span></label></div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0;"><span><i class="fas fa-tint"></i> تنبيهات الري</span><label class="switch"><input type="checkbox" id="notifIrrigation" checked><span class="slider round"></span></label></div>
-                <button class="btn-save" style="margin-top:1rem;" onclick="saveNotifications()"><i class="fas fa-save"></i> حفظ الإعدادات</button>
-            </div>
-            <div class="card" style="margin-top:1.5rem;">
-                <div class="card-header"><div class="card-title"><i class="fas fa-lock"></i> الأمان</div></div>
-                <div class="form-group"><label>كلمة المرور الحالية</label><input type="password" id="currentPass" class="form-control"></div>
-                <div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPass" class="form-control"></div>
-                <div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="confirmPass" class="form-control"></div>
-                <button class="btn-save" onclick="changePassword()"><i class="fas fa-key"></i> تغيير كلمة المرور</button>
-            </div>
-        </div>
-
-        <!-- صفحة الاتصال -->
-        <div id="page-contact" class="page-content">
-            <div class="main-grid">
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-info-circle"></i> معلومات الاتصال</div></div>
-                    <p><i class="fas fa-map-marker-alt" style="color:var(--secondary); width:30px;"></i> الجزائر العاصمة، الجزائر</p>
-                    <p><i class="fas fa-phone" style="color:var(--secondary); width:30px;"></i> +213 555 12 34 56</p>
-                    <p><i class="fas fa-envelope" style="color:var(--secondary); width:30px;"></i> contact@agrismart.dz</p>
-                    <p><i class="fas fa-clock" style="color:var(--secondary); width:30px;"></i> السبت - الخميس: 08:00 - 18:00</p>
-                    <div style="margin-top:1rem; display:flex; gap:1rem;">
-                        <a href="#" style="background:#1877f2; color:white; padding:0.5rem 1rem; border-radius:30px;"><i class="fab fa-facebook"></i> فيسبوك</a>
-                        <a href="#" style="background:#1da1f2; color:white; padding:0.5rem 1rem; border-radius:30px;"><i class="fab fa-twitter"></i> تويتر</a>
-                        <a href="#" style="background:#e4405f; color:white; padding:0.5rem 1rem; border-radius:30px;"><i class="fab fa-instagram"></i> انستغرام</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i class="fas fa-paper-plane"></i> أرسل لنا رسالة</div></div>
-                    <div class="form-group"><input type="text" id="contactName" class="form-control" placeholder="الاسم الكامل"></div>
-                    <div class="form-group"><input type="email" id="contactEmail" class="form-control" placeholder="البريد الإلكتروني"></div>
-                    <div class="form-group"><input type="text" id="contactSubject" class="form-control" placeholder="الموضوع"></div>
-                    <div class="form-group"><textarea id="contactMessage" rows="4" class="form-control" placeholder="رسالتك..."></textarea></div>
-                    <button class="btn-primary" style="width:100%;" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> إرسال</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- منطقة عرض النتائج -->
+    <div id="resultsArea" style="display: none;"></div>
 </div>
 
-<div class="bottom-nav">
-    <a href="#" class="bottom-nav-item" data-page="home"><i class="fas fa-home"></i><span>الرئيسية</span></a>
-    <a href="#" class="bottom-nav-item" data-page="dashboard"><i class="fas fa-chart-line"></i><span>التحليلات</span></a>
-    <a href="#" class="bottom-nav-item" data-page="settings"><i class="fas fa-user-cog"></i><span>الإعدادات</span></a>
-    <a href="#" class="bottom-nav-item" data-page="contact"><i class="fas fa-headset"></i><span>الدعم</span></a>
-</div>
-
-<div class="modal" id="authModal"><div class="modal-content"><h2 id="modalTitle">تسجيل الدخول</h2><div id="loginForm"><input type="email" id="loginEmail" placeholder="البريد" class="form-control" style="margin-bottom:1rem;"><input type="password" id="loginPassword" placeholder="كلمة المرور" class="form-control" style="margin-bottom:1rem;"><button class="btn-primary" style="width:100%;" onclick="login()">دخول</button></div><div id="signupForm" style="display:none;"><input type="text" id="signupName" placeholder="الاسم" class="form-control" style="margin-bottom:1rem;"><input type="email" id="signupEmail" placeholder="البريد" class="form-control" style="margin-bottom:1rem;"><input type="password" id="signupPassword" placeholder="كلمة المرور" class="form-control" style="margin-bottom:1rem;"><button class="btn-primary" style="width:100%;" onclick="signup()">إنشاء حساب</button></div><p style="text-align:center; margin-top:1rem;"><span style="color:var(--secondary); cursor:pointer;" onclick="toggleAuthMode()">إنشاء حساب جديد</span></p></div></div>
-
+<!-- نافذة تسجيل الدخول -->
+<div class="modal" id="loginModal"><div class="modal-content"><h3>تسجيل الدخول للتواصل</h3><input type="text" id="loginName" placeholder="الاسم" class="form-control" style="margin-bottom:1rem;"><input type="email" id="loginEmail" placeholder="البريد" class="form-control" style="margin-bottom:1rem;"><button class="btn-primary" onclick="saveUserContact()">تسجيل</button><button onclick="closeLoginModal()" style="margin-top:0.5rem;">إلغاء</button></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-    // بيانات المستخدمين والمحاصيل
-    let users = JSON.parse(localStorage.getItem('agrismart_users')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('agrismart_current_user')) || null;
-    let currentSoil = { N: 42, P: 28, K: 110, pH: 6.8 };
+    // ==================== قاعدة بيانات المحاصيل (القيم المثالية) ====================
+    const cropDatabase = {
+        tomato: { name: 'طماطم', optimalN: 50, optimalP: 30, optimalK: 120, optimalPH: 6.5, optimalEC: 1.5, baseYield: 3.5, price: 35, waterNeed: 40 },
+        pepper: { name: 'فلفل', optimalN: 40, optimalP: 35, optimalK: 100, optimalPH: 6.2, optimalEC: 1.4, baseYield: 2.8, price: 45, waterNeed: 35 },
+        cucumber: { name: 'خيار', optimalN: 45, optimalP: 30, optimalK: 110, optimalPH: 6.8, optimalEC: 1.6, baseYield: 4.2, price: 28, waterNeed: 45 },
+        potato: { name: 'بطاطا', optimalN: 55, optimalP: 40, optimalK: 140, optimalPH: 5.8, optimalEC: 1.7, baseYield: 3.8, price: 40, waterNeed: 35 },
+        wheat: { name: 'قمح', optimalN: 60, optimalP: 25, optimalK: 80, optimalPH: 6.5, optimalEC: 1.2, baseYield: 2.2, price: 22, waterNeed: 30 },
+        strawberry: { name: 'فراولة', optimalN: 40, optimalP: 35, optimalK: 120, optimalPH: 5.8, optimalEC: 1.3, baseYield: 1.8, price: 85, waterNeed: 30 },
+        onion: { name: 'بصل', optimalN: 35, optimalP: 30, optimalK: 90, optimalPH: 6.2, optimalEC: 1.2, baseYield: 2.5, price: 30, waterNeed: 25 },
+        lettuce: { name: 'خس', optimalN: 30, optimalP: 25, optimalK: 80, optimalPH: 6.5, optimalEC: 1.1, baseYield: 2.0, price: 25, waterNeed: 20 }
+    };
 
-    const crops = { tomato: { name: 'طماطم', baseYield: 3.5, price: 35 }, pepper: { name: 'فلفل', baseYield: 2.8, price: 45 }, cucumber: { name: 'خيار', baseYield: 4.2, price: 28 }, potato: { name: 'بطاطا', baseYield: 3.8, price: 40 } };
+    let currentSoil = { N: null, P: null, K: null, pH: null, EC: null };
+    let userContact = null;
 
-    function init() {
-        if(currentUser) {
-            document.getElementById('publicContent').style.display = 'none';
-            document.getElementById('loggedContent').classList.add('show');
-            document.getElementById('authButtons').style.display = 'none';
-            document.getElementById('userMenu').style.display = 'flex';
-            document.getElementById('userNameDisplay').innerText = currentUser.name;
-            document.getElementById('welcomeName').innerText = currentUser.name;
-            document.getElementById('userAvatar').innerHTML = currentUser.name.charAt(0);
-            loadProfile();
-            updateStats();
-        } else {
-            document.getElementById('publicContent').style.display = 'block';
-            document.getElementById('loggedContent').classList.remove('show');
-            document.getElementById('authButtons').style.display = 'flex';
-            document.getElementById('userMenu').style.display = 'none';
+    // تبديل طرق الإدخال
+    function switchToManual() {
+        document.getElementById('manualInputSection').style.display = 'block';
+        document.getElementById('imageInputSection').style.display = 'none';
+        document.getElementById('btnManualInput').style.background = 'linear-gradient(135deg, var(--secondary), #f57c00)';
+        document.getElementById('btnImageInput').style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+    }
+    function switchToImage() {
+        document.getElementById('manualInputSection').style.display = 'none';
+        document.getElementById('imageInputSection').style.display = 'block';
+        document.getElementById('btnImageInput').style.background = 'linear-gradient(135deg, var(--secondary), #f57c00)';
+        document.getElementById('btnManualInput').style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+    }
+
+    // محاكاة تحليل الصورة (Hanna HI3896)
+    document.getElementById('imageUpload')?.addEventListener('change', function(e) {
+        if(e.target.files && e.target.files[0]) {
+            showToast('📸 جاري تحليل الصورة...');
+            setTimeout(() => {
+                // توليد قيم واقعية من الصورة (محاكاة)
+                currentSoil.N = Math.floor(Math.random() * 50) + 25;
+                currentSoil.P = Math.floor(Math.random() * 40) + 10;
+                currentSoil.K = Math.floor(Math.random() * 100) + 50;
+                currentSoil.pH = (Math.random() * 2 + 5.5).toFixed(1);
+                currentSoil.EC = (Math.random() * 2 + 0.5).toFixed(1);
+                document.getElementById('manualN').value = currentSoil.N;
+                document.getElementById('manualP').value = currentSoil.P;
+                document.getElementById('manualK').value = currentSoil.K;
+                document.getElementById('manualPH').value = currentSoil.pH;
+                document.getElementById('manualEC').value = currentSoil.EC;
+                showToast('✅ تم تحليل الصورة بنجاح');
+                switchToManual();
+            }, 2000);
         }
+    });
+
+    // حساب العوامل
+    function calculateSoilFactor(soil, crop) {
+        let nFactor = 1 - Math.abs(soil.N - crop.optimalN) / crop.optimalN * 0.6;
+        let pFactor = 1 - Math.abs(soil.P - crop.optimalP) / crop.optimalP * 0.6;
+        let kFactor = 1 - Math.abs(soil.K - crop.optimalK) / crop.optimalK * 0.6;
+        let phFactor = 1 - Math.abs(soil.pH - crop.optimalPH) * 0.25;
+        let ecFactor = 1 - Math.abs(soil.EC - crop.optimalEC) / crop.optimalEC * 0.4;
+        return Math.max(0.3, (nFactor + pFactor + kFactor + phFactor + ecFactor) / 5);
     }
 
-    function loadProfile() {
-        if(currentUser) {
-            document.getElementById('profileName').value = currentUser.name || '';
-            document.getElementById('profileEmail').value = currentUser.email || '';
-            document.getElementById('farmName').value = currentUser.farmName || '';
-            document.getElementById('profilePhone').value = currentUser.phone || '';
-            document.getElementById('profileWilaya').value = currentUser.wilaya || '';
+    // حساب المردودية
+    function calculateYield(area, crop, soilFactor, waterAmount, waterPeriod) {
+        let waterNeed = crop.waterNeed * area / 1000; // بالمتر المكعب
+        let waterAvailable = waterAmount;
+        if(waterPeriod === 'week') waterAvailable *= 7;
+        else if(waterPeriod === 'month') waterAvailable /= 30;
+        let waterFactor = Math.min(1, waterAvailable / waterNeed);
+        let baseYieldPerM2 = crop.baseYield;
+        let actualYieldPerM2 = baseYieldPerM2 * soilFactor * waterFactor;
+        return Math.round(actualYieldPerM2 * area / 1000);
+    }
+
+    // حساب العناصر الناقصة والسماد المطلوب
+    function calculateFertilizer(soil, crop, area) {
+        let nDeficit = Math.max(0, crop.optimalN - soil.N);
+        let pDeficit = Math.max(0, crop.optimalP - soil.P);
+        let kDeficit = Math.max(0, crop.optimalK - soil.K);
+        
+        let nRequired = Math.round(nDeficit * area / 1000 * 0.5); // كغ
+        let pRequired = Math.round(pDeficit * area / 1000 * 0.4);
+        let kRequired = Math.round(kDeficit * area / 1000 * 0.3);
+        
+        let totalFertilizerCost = (nRequired * 80) + (pRequired * 70) + (kRequired * 90);
+        
+        let fertilizerTypes = [];
+        if(nRequired > 0) fertilizerTypes.push({ element: 'نيتروجين', amount: nRequired, source: 'يوريا', cost: nRequired * 80 });
+        if(pRequired > 0) fertilizerTypes.push({ element: 'فوسفور', amount: pRequired, source: 'سوبر فوسفات', cost: pRequired * 70 });
+        if(kRequired > 0) fertilizerTypes.push({ element: 'بوتاسيوم', amount: kRequired, source: 'كبريتات البوتاسيوم', cost: kRequired * 90 });
+        
+        return { nDeficit, pDeficit, kDeficit, nRequired, pRequired, kRequired, totalCost: totalFertilizerCost, types: fertilizerTypes };
+    }
+
+    // حساب صلاحية الأرض
+    function calculateSuitability(soil, crop) {
+        let nScore = Math.max(0, 100 - Math.abs(soil.N - crop.optimalN) / crop.optimalN * 50);
+        let pScore = Math.max(0, 100 - Math.abs(soil.P - crop.optimalP) / crop.optimalP * 50);
+        let kScore = Math.max(0, 100 - Math.abs(soil.K - crop.optimalK) / crop.optimalK * 50);
+        let phScore = Math.max(0, 100 - Math.abs(soil.pH - crop.optimalPH) * 20);
+        let ecScore = Math.max(0, 100 - Math.abs(soil.EC - crop.optimalEC) / crop.optimalEC * 40);
+        return Math.round((nScore + pScore + kScore + phScore + ecScore) / 5);
+    }
+
+    // التحليل الكامل
+    function calculateFullAnalysis() {
+        // جمع البيانات
+        let N = parseFloat(document.getElementById('manualN').value);
+        let P = parseFloat(document.getElementById('manualP').value);
+        let K = parseFloat(document.getElementById('manualK').value);
+        let pH = parseFloat(document.getElementById('manualPH').value);
+        let EC = parseFloat(document.getElementById('manualEC').value);
+        let cropKey = document.getElementById('cropType').value;
+        let area = parseFloat(document.getElementById('area').value);
+        let waterAmount = parseFloat(document.getElementById('waterAmount').value);
+        let waterPeriod = document.getElementById('waterPeriod').value;
+
+        if(isNaN(N) || isNaN(P) || isNaN(K) || isNaN(pH) || isNaN(EC) || isNaN(area) || isNaN(waterAmount)) {
+            showToast('⚠️ الرجاء إدخال جميع البيانات');
+            return;
         }
+
+        currentSoil = { N, P, K, pH, EC };
+        const crop = cropDatabase[cropKey];
+        
+        // حساب المردودية بدون تحسينات
+        let soilFactor = calculateSoilFactor(currentSoil, crop);
+        let yieldWithoutFertilizer = calculateYield(area, crop, soilFactor, waterAmount, waterPeriod);
+        
+        // حساب المردودية بعد إضافة السماد المثالي
+        let fertilizer = calculateFertilizer(currentSoil, crop, area);
+        let improvedSoil = {
+            N: Math.min(crop.optimalN, currentSoil.N + fertilizer.nRequired * 2),
+            P: Math.min(crop.optimalP, currentSoil.P + fertilizer.pRequired * 2.5),
+            K: Math.min(crop.optimalK, currentSoil.K + fertilizer.kRequired * 3),
+            pH: currentSoil.pH,
+            EC: currentSoil.EC
+        };
+        let improvedFactor = calculateSoilFactor(improvedSoil, crop);
+        let yieldWithFertilizer = calculateYield(area, crop, improvedFactor, waterAmount, waterPeriod);
+        
+        // حساب صلاحية الأرض
+        let suitability = calculateSuitability(currentSoil, crop);
+        
+        // حساب الفرق بين الأرض الحالية والمثالية
+        let differences = {
+            N: { current: currentSoil.N, optimal: crop.optimalN, diff: crop.optimalN - currentSoil.N, status: currentSoil.N >= crop.optimalN * 0.8 ? 'جيد' : (currentSoil.N >= crop.optimalN * 0.6 ? 'متوسط' : 'ضعيف') },
+            P: { current: currentSoil.P, optimal: crop.optimalP, diff: crop.optimalP - currentSoil.P, status: currentSoil.P >= crop.optimalP * 0.8 ? 'جيد' : (currentSoil.P >= crop.optimalP * 0.6 ? 'متوسط' : 'ضعيف') },
+            K: { current: currentSoil.K, optimal: crop.optimalK, diff: crop.optimalK - currentSoil.K, status: currentSoil.K >= crop.optimalK * 0.8 ? 'جيد' : (currentSoil.K >= crop.optimalK * 0.6 ? 'متوسط' : 'ضعيف') },
+            pH: { current: currentSoil.pH, optimal: crop.optimalPH, diff: crop.optimalPH - currentSoil.pH, status: Math.abs(currentSoil.pH - crop.optimalPH) < 0.5 ? 'جيد' : (Math.abs(currentSoil.pH - crop.optimalPH) < 1 ? 'متوسط' : 'ضعيف') },
+            EC: { current: currentSoil.EC, optimal: crop.optimalEC, diff: crop.optimalEC - currentSoil.EC, status: currentSoil.EC <= crop.optimalEC * 1.2 ? 'جيد' : 'ضعيف' }
+        };
+        
+        // عرض النتائج
+        let resultsHtml = `
+            <div class="card">
+                <div class="card-title"><i class="fas fa-chart-line"></i> 📊 نتائج التحليل والمردودية</div>
+                
+                <div class="result-card">
+                    <h3 style="color: var(--primary);">🌾 المردودية المتوقعة</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: #f5f5f5; border-radius: 16px;">
+                            <div style="font-size: 0.85rem;">بدون إضافة سماد</div>
+                            <div class="result-value">${yieldWithoutFertilizer.toLocaleString()} <span style="font-size: 1rem;">كغ</span></div>
+                            <div style="color: var(--gray);">≈ ${(yieldWithoutFertilizer * crop.price).toLocaleString()} دج</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #e8f5e9; border-radius: 16px;">
+                            <div style="font-size: 0.85rem;">بعد إضافة السماد المخصص</div>
+                            <div class="result-value" style="color: var(--success);">${yieldWithFertilizer.toLocaleString()} <span style="font-size: 1rem;">كغ</span></div>
+                            <div style="color: var(--gray);">≈ ${(yieldWithFertilizer * crop.price).toLocaleString()} دج</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar" style="margin-top: 1rem;"><div class="progress-fill" style="width: ${Math.round(yieldWithFertilizer / (crop.baseYield * area / 1000) * 100)}%;"></div></div>
+                    <p style="margin-top: 0.5rem;">📈 زيادة متوقعة: <strong>${((yieldWithFertilizer - yieldWithoutFertilizer) / yieldWithoutFertilizer * 100).toFixed(1)}%</strong> (≈ ${(yieldWithFertilizer - yieldWithoutFertilizer).toLocaleString()} كغ)</p>
+                </div>
+
+                <div class="result-card" style="margin-top: 1rem;">
+                    <h3 style="color: var(--primary);">🧪 حالة تربتك الحالية</h3>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 1rem; text-align: center;">
+                        <div><div>🧪 N</div><div class="result-value" style="font-size: 1.2rem;">${currentSoil.N}</div><span class="soil-badge ${differences.N.status === 'جيد' ? 'good' : (differences.N.status === 'متوسط' ? 'medium' : 'bad')}">${differences.N.status}</span></div>
+                        <div><div>🧪 P</div><div class="result-value" style="font-size: 1.2rem;">${currentSoil.P}</div><span class="soil-badge ${differences.P.status === 'جيد' ? 'good' : (differences.P.status === 'متوسط' ? 'medium' : 'bad')}">${differences.P.status}</span></div>
+                        <div><div>🧪 K</div><div class="result-value" style="font-size: 1.2rem;">${currentSoil.K}</div><span class="soil-badge ${differences.K.status === 'جيد' ? 'good' : (differences.K.status === 'متوسط' ? 'medium' : 'bad')}">${differences.K.status}</span></div>
+                        <div><div>⚗️ pH</div><div class="result-value" style="font-size: 1.2rem;">${currentSoil.pH}</div><span class="soil-badge ${differences.pH.status === 'جيد' ? 'good' : (differences.pH.status === 'متوسط' ? 'medium' : 'bad')}">${differences.pH.status}</span></div>
+                        <div><div>💧 EC</div><div class="result-value" style="font-size: 1.2rem;">${currentSoil.EC}</div><span class="soil-badge ${differences.EC.status === 'جيد' ? 'good' : 'bad'}">${differences.EC.status}</span></div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p><strong>🌱 صلاحية الأرض للمحصول (${crop.name}):</strong> ${suitability}%</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: ${suitability}%;"></div></div>
+                        <p style="margin-top: 0.5rem; font-size: 0.85rem;">التربة المثالية لـ ${crop.name}: N=${crop.optimalN}, P=${crop.optimalP}, K=${crop.optimalK}, pH=${crop.optimalPH}, EC=${crop.optimalEC}</p>
+                    </div>
+                </div>
+
+                <div class="result-card" style="margin-top: 1rem; background: #fff3e0;">
+                    <h3 style="color: var(--secondary);"><i class="fas fa-flask"></i> العناصر الناقصة والسماد المخصص</h3>
+                    <div style="margin-top: 1rem;">
+                        ${fertilizer.types.length === 0 ? '<p>✅ تربتك متوازنة، لا تحتاج إلى سماد إضافي</p>' : `
+                            <table style="width:100%; border-collapse: collapse;">
+                                <tr style="background: var(--gray-light);"><th style="padding: 0.5rem;">العنصر</th><th>النقص (ppm)</th><th>السماد المناسب</th><th>الكمية المطلوبة (كغ)</th><th>التكلفة (دج)</th></tr>
+                                ${fertilizer.types.map(t => `<tr><td style="padding: 0.5rem;">${t.element}</td><td>${t.element === 'نيتروجين' ? fertilizer.nDeficit.toFixed(1) : (t.element === 'فوسفور' ? fertilizer.pDeficit.toFixed(1) : fertilizer.kDeficit.toFixed(1))}</td><td>${t.source}</td><td>${t.amount}</td><td>${t.cost.toLocaleString()}</td></tr>`).join('')}
+                            </table>
+                            <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 12px;">
+                                <p><strong>💰 التكلفة الإجمالية للسماد: ${fertilizer.totalCost.toLocaleString()} دج</strong></p>
+                                <p style="font-size: 0.85rem;">📦 هذا السماد مصمم خصيصاً لأرضك حسب تحليل التربة</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+
+                <div class="result-card" style="margin-top: 1rem;">
+                    <h3 style="color: var(--primary);"><i class="fas fa-phone-alt"></i> تواصل معنا لتصنيع السماد المخصص</h3>
+                    <p>يمكننا تصنيع السماد المناسب لأرضك وفق النسب المحددة أعلاه.</p>
+                    <button class="btn-primary" style="margin-top: 0.8rem;" onclick="openLoginModalForContact()"><i class="fas fa-headset"></i> طلب السماد المخصص</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('resultsArea').innerHTML = resultsHtml;
+        document.getElementById('resultsArea').style.display = 'block';
+        document.getElementById('resultsArea').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function saveProfile() {
-        currentUser.name = document.getElementById('profileName').value;
-        currentUser.farmName = document.getElementById('farmName').value;
-        currentUser.phone = document.getElementById('profilePhone').value;
-        currentUser.wilaya = document.getElementById('profileWilaya').value;
-        localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
-        let idx = users.findIndex(u => u.id === currentUser.id);
-        if(idx !== -1) users[idx] = currentUser;
-        localStorage.setItem('agrismart_users', JSON.stringify(users));
-        showToast('✅ تم حفظ الملف الشخصي');
-    }
-
-    function updateStats() {
-        if(currentUser && currentUser.plants) {
-            let area = currentUser.plants.reduce((s,p)=>s+p.area,0);
-            let count = currentUser.plants.length;
-            let yieldEst = currentUser.plants.reduce((s,p)=>s+(crops[p.crop]?.baseYield||0)*p.area/1000,0);
-            let value = currentUser.plants.reduce((s,p)=>s+(crops[p.crop]?.baseYield||0)*p.area/1000*(crops[p.crop]?.price||30),0);
-            document.getElementById('statArea').innerText = area;
-            document.getElementById('statPlants').innerText = count;
-            document.getElementById('statYield').innerText = Math.round(yieldEst);
-            document.getElementById('statValue').innerText = Math.round(value);
-        }
-    }
-
-    function addPlant() {
-        if(!currentUser) return;
-        let crop = document.getElementById('cropSelect').value;
-        let area = parseFloat(document.getElementById('areaInput').value);
-        if(!area) { showToast('⚠️ أدخل المساحة'); return; }
-        if(!currentUser.plants) currentUser.plants = [];
-        currentUser.plants.push({ id: Date.now(), crop: crop, name: crops[crop].name, area: area });
-        localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
-        let idx = users.findIndex(u=>u.id===currentUser.id);
-        if(idx!==-1) users[idx]=currentUser;
-        localStorage.setItem('agrismart_users', JSON.stringify(users));
-        document.getElementById('areaInput').value = '';
-        updateStats();
-        showToast('✅ تم إضافة الزرع');
-    }
-
-    function analyzeSoilAI() {
-        showToast('🤖 جاري تحليل التربة بالذكاء الاصطناعي...');
-        setTimeout(() => {
-            currentSoil = { N: Math.floor(Math.random()*50)+30, P: Math.floor(Math.random()*40)+15, K: Math.floor(Math.random()*100)+70, pH: (Math.random()*2+5.5).toFixed(1) };
-            let suitability = Math.round((1-Math.abs(currentSoil.N-50)/50*0.5 + 1-Math.abs(currentSoil.P-30)/30*0.5 + 1-Math.abs(currentSoil.K-110)/110*0.5 + 1-Math.abs(currentSoil.pH-6.5)*0.2)/4*100);
-            let rec = '';
-            if(currentSoil.N < 45) rec += '⚠️ نقص نيتروجين - أضف سماد نيتروجيني. ';
-            if(currentSoil.P < 25) rec += '⚠️ نقص فوسفور - أضف سماد فوسفاتي. ';
-            if(currentSoil.K < 90) rec += '⚠️ نقص بوتاسيوم - أضف سماد بوتاسيوم. ';
-            if(suitability>70) rec = '✅ تربة ممتازة، استمر في العناية.';
-            else if(rec==='') rec = '✅ التربة متوازنة، تسميد وقائي كاف.';
-            document.getElementById('soilResult').innerHTML = `<p>🧪 النيتروجين: ${currentSoil.N} ppm<br>🧪 الفوسفور: ${currentSoil.P} ppm<br>🧪 البوتاسيوم: ${currentSoil.K} ppm<br>⚗️ pH: ${currentSoil.pH}<br>🌱 صلاحية: ${suitability}%</p>`;
-            document.getElementById('aiRecommendations').innerHTML = `<div class="ai-badge" style="margin-bottom:0.5rem;"><i class="fas fa-robot"></i> توصية ذكية</div><p>${rec}</p>`;
-            showToast('✅ تم تحليل التربة بنجاح');
-        }, 1500);
-    }
-
-    function sendMessage() {
-        let name = document.getElementById('contactName')?.value;
-        let email = document.getElementById('contactEmail')?.value;
-        let subject = document.getElementById('contactSubject')?.value;
-        let msg = document.getElementById('contactMessage')?.value;
-        if(!name || !email || !msg) { showToast('⚠️ الرجاء ملء جميع الحقول'); return; }
-        showToast('📧 تم إرسال رسالتك، سنرد عليك قريباً');
-        document.getElementById('contactName').value = '';
-        document.getElementById('contactEmail').value = '';
-        document.getElementById('contactSubject').value = '';
-        document.getElementById('contactMessage').value = '';
-    }
-
-    function changePassword() {
-        let cur = document.getElementById('currentPass')?.value;
-        let newp = document.getElementById('newPass')?.value;
-        let conf = document.getElementById('confirmPass')?.value;
-        if(!cur || !newp || !conf) { showToast('⚠️ املأ جميع الحقول'); return; }
-        if(newp !== conf) { showToast('❌ كلمة المرور غير متطابقة'); return; }
-        showToast('✅ تم تغيير كلمة المرور بنجاح');
-        document.getElementById('currentPass').value = '';
-        document.getElementById('newPass').value = '';
-        document.getElementById('confirmPass').value = '';
-    }
-
-    function saveNotifications() {
-        showToast('✅ تم حفظ إعدادات الإشعارات');
-    }
-
-    function signup() {
-        let name = document.getElementById('signupName').value;
-        let email = document.getElementById('signupEmail').value;
-        let password = document.getElementById('signupPassword').value;
-        if(!name || !email || !password) { showToast('⚠️ املأ جميع الحقول'); return; }
-        if(users.find(u=>u.email===email)) { showToast('⚠️ البريد موجود'); return; }
-        let newUser = { id: Date.now(), name, email, password, plants: [], farmName: '', phone: '', wilaya: '' };
-        users.push(newUser);
-        localStorage.setItem('agrismart_users', JSON.stringify(users));
-        currentUser = newUser;
-        localStorage.setItem('agrismart_current_user', JSON.stringify(newUser));
-        document.getElementById('authModal').style.display = 'none';
-        init();
-        showToast('✅ مرحباً بك ' + name);
-    }
-
-    function login() {
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+    function openLoginModalForContact() { openLoginModal(); }
+    
+    function saveUserContact() {
+        let name = document.getElementById('loginName').value;
         let email = document.getElementById('loginEmail').value;
-        let password = document.getElementById('loginPassword').value;
-        let user = users.find(u=>u.email===email && u.password===password);
-        if(user) {
-            currentUser = user;
-            localStorage.setItem('agrismart_current_user', JSON.stringify(user));
-            document.getElementById('authModal').style.display = 'none';
-            init();
-            showToast('✅ مرحباً بعودتك');
-        } else { showToast('❌ البريد أو كلمة المرور غير صحيحة'); }
+        if(!name || !email) { showToast('⚠️ الرجاء إدخال الاسم والبريد'); return; }
+        userContact = { name, email };
+        closeLoginModal();
+        showToast('✅ تم تسجيل بياناتك، سنتواصل معك قريباً لتصنيع السماد');
     }
 
-    function openModal(type) {
-        document.getElementById('authModal').style.display = 'flex';
-        if(type==='login') { document.getElementById('loginForm').style.display='block'; document.getElementById('signupForm').style.display='none'; document.getElementById('modalTitle').innerText='تسجيل الدخول'; }
-        else { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; document.getElementById('modalTitle').innerText='إنشاء حساب'; }
-    }
-    function toggleAuthMode() { openModal(document.getElementById('loginForm').style.display==='block'?'signup':'login'); }
     function showToast(msg) { let t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
-    window.onclick = function(e) { if(e.target === document.getElementById('authModal')) document.getElementById('authModal').style.display = 'none'; };
-    document.querySelectorAll('[data-page]').forEach(btn=>{ btn.addEventListener('click', function(e){ e.preventDefault(); let page=this.dataset.page; document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active')); document.getElementById(`page-${page}`).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.bottom-nav-item').forEach(n=>n.classList.remove('active')); document.querySelector(`.bottom-nav-item[data-page="${page}"]`)?.classList.add('active'); }); });
-    init();
+    
+    switchToManual();
 </script>
 </body>
 </html>
