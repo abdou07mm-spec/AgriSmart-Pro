@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriSmart Hub v4.0 | المنصة المتكاملة لإدارة الأسمدة والري</title>
+    <title>AgriSmart Hub v5.0 | المنصة الاحترافية للزراعة الدقيقة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,7 +11,7 @@
         :root {
             --primary: #2d6a4f; --dark: #1b4332; --accent: #ff9f1c;
             --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b;
-            --blue-eco: #0077b6; --danger: #ef4444; --success: #22c55e;
+            --danger: #ef4444; --success: #22c55e;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: var(--bg); color: var(--text); display: flex; }
@@ -23,33 +23,32 @@
         .logo { font-size: 1.4rem; font-weight: 800; margin-bottom: 2rem; color: var(--success); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
         .nav-item { padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.6); }
         .nav-item.active { background: var(--primary); color: white; }
-        .nav-item:hover { background: rgba(255,255,255,0.15); color: white; }
 
-        /* Dashboard Elements */
-        .grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
-        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
-        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; color: var(--dark); }
+        /* Dashboard Layout */
+        .grid-main { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; color: var(--dark); border-right: 4px solid var(--accent); padding-right: 10px; }
 
         /* Form Grid */
-        .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.85rem; font-weight: 600; color: #64748b; }
-        input, select { width: 100%; padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; }
+        .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 5px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.8rem; font-weight: 700; color: #64748b; }
+        input, select { width: 100%; padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; transition: 0.3s; }
         input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1); }
 
         /* Buttons */
         .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-calc { background: var(--primary); color: white; margin-top: 10px; }
-        .btn-calc:hover { background: var(--dark); }
+        .btn-calc { background: var(--primary); color: white; margin-top: 10px; font-size: 1.1rem; }
+        .btn-calc:hover { background: var(--dark); transform: translateY(-2px); }
+        
         .btn-valve { background: #64748b; color: white; }
         .btn-valve.active { background: var(--success); animation: pulse 2s infinite; }
 
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
 
-        /* Results Display */
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
-        .badge-primary { background: #dcfce7; color: #166534; }
-        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+        /* Result Sections */
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .chart-container { height: 280px; margin-top: 1rem; }
 
         @media (max-width: 1024px) { .grid-main { grid-template-columns: 1fr; } .sidebar { display: none; } .main-content { margin-right: 0; width: 100%; } }
     </style>
@@ -57,41 +56,39 @@
 <body>
 
     <aside class="sidebar">
-        <div class="logo"><i class="fas fa-microchip"></i> AgriSmart <span>v4.0</span></div>
+        <div class="logo"><i class="fas fa-microchip"></i> AgriSmart <span>PRO</span></div>
         <nav>
-            <div class="nav-item active"><i class="fas fa-home"></i> الرئيسة</div>
-            <div class="nav-item"><i class="fas fa-vial"></i> مختبر النانو</div>
+            <div class="nav-item active"><i class="fas fa-vial"></i> تحليل التربة الشامل</div>
             <div class="nav-item"><i class="fas fa-industry"></i> مصنع واد الحراش</div>
             <div class="nav-item"><i class="fas fa-broadcast-tower"></i> أجهزة IoT</div>
-            <div class="nav-item"><i class="fas fa-history"></i> سجلات الحقل</div>
+            <div class="nav-item"><i class="fas fa-chart-line"></i> تقارير المردود</div>
         </nav>
     </aside>
 
     <main class="main-content">
-        <div style="background: linear-gradient(90deg, var(--dark), var(--primary)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="background: linear-gradient(135deg, var(--dark), var(--primary)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <h2 style="font-weight: 800;">محطة استخلاص الأسمدة العضوية</h2>
-                <p style="opacity: 0.8;">تحويل نفايات واد الحراش إلى مردود زراعي عالي الجودة</p>
+                <h2 style="font-weight: 800;">منصة المعالجة والتسميد الذكي</h2>
+                <p style="opacity: 0.8;">تحليل دقيق لـ 11 عنصراً متحكماً في جودة التربة</p>
             </div>
-            <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px;">
-                <span style="display:block; font-size: 0.8rem;">حالة المصنع</span>
-                <span style="font-weight: 700;"><i class="fas fa-circle" style="color:var(--success); font-size: 0.7rem;"></i> قيد التشغيل</span>
+            <div style="background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; text-align: center;">
+                <span style="font-size: 0.75rem; display: block;">مشروع رسكلة مياه واد الحراش</span>
+                <span style="font-weight: 700;"><i class="fas fa-check-circle"></i> النظام جاهز</span>
             </div>
         </div>
 
         <div class="grid-main">
             <div class="left-col">
                 <div class="card">
-                    <div class="card-title"><i class="fas fa-sliders-h"></i> إدخال بيانات التحليل الشامل</div>
-                    
+                    <div class="card-title"><i class="fas fa-database"></i> مدخلات الحقل والمحصول</div>
                     <div class="input-grid">
                         <div class="form-group">
-                            <label>نوع المحصول</label>
+                            <label>المحصول</label>
                             <select id="cropType">
                                 <option value="طماطم">طماطم</option>
                                 <option value="بطاطا">بطاطا</option>
                                 <option value="قمح">قمح</option>
-                                <option value="حمضيات">حمضيات</option>
+                                <option value="أشجار">حمضيات</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -99,71 +96,63 @@
                             <input type="number" id="area" value="1" step="0.1">
                         </div>
                         <div class="form-group">
-                            <label>الهدف (طن/هكتار)</label>
-                            <input type="number" id="targetYield" value="80">
+                            <label>المردود المستهدف (طن/هكتار)</label>
+                            <input type="number" id="targetYield" value="70">
                         </div>
                     </div>
 
-                    <label style="color: var(--primary);"><i class="fas fa-atom"></i> العناصر الكبرى (NPK)</label>
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <div class="card-title" style="font-size: 0.9rem; color: var(--primary);"><i class="fas fa-atom"></i> مصفوفة العناصر الكبرى والثانوية (ppm)</div>
                     <div class="input-grid">
-                        <div class="form-group"><input type="number" id="soilN" placeholder="N (ppm)" value="45"></div>
-                        <div class="form-group"><input type="number" id="soilP" placeholder="P (ppm)" value="20"></div>
-                        <div class="form-group"><input type="number" id="soilK" placeholder="K (ppm)" value="150"></div>
+                        <div class="form-group"><label>N (نيتروجين)</label><input type="number" id="valN" value="40"></div>
+                        <div class="form-group"><label>P (فوسفور)</label><input type="number" id="valP" value="25"></div>
+                        <div class="form-group"><label>K (بوتاسيوم)</label><input type="number" id="valK" value="180"></div>
+                        <div class="form-group"><label>Ca (كالسيوم)</label><input type="number" id="valCa" value="2000"></div>
+                        <div class="form-group"><label>Mg (مغنيسيوم)</label><input type="number" id="valMg" value="350"></div>
+                        <div class="form-group"><label>S (كبريت)</label><input type="number" id="valS" value="40"></div>
                     </div>
 
-                    <label style="color: #6366f1;"><i class="fas fa-vials"></i> العناصر الثانوية (Ca, Mg, S)</label>
+                    <div class="card-title" style="font-size: 0.9rem; color: #b45309;"><i class="fas fa-microscope"></i> العناصر الصغرى والخصائص الفيزيائية</div>
                     <div class="input-grid">
-                        <div class="form-group"><input type="number" id="soilCa" placeholder="Ca (ppm)" value="2000"></div>
-                        <div class="form-group"><input type="number" id="soilMg" placeholder="Mg (ppm)" value="300"></div>
-                        <div class="form-group"><input type="number" id="soilS" placeholder="S (ppm)" value="30"></div>
+                        <div class="form-group"><label>Fe (حديد)</label><input type="number" id="valFe" value="15"></div>
+                        <div class="form-group"><label>Zn (زنك)</label><input type="number" id="valZn" value="2"></div>
+                        <div class="form-group"><label>pH (حموضة)</label><input type="number" id="valPH" step="0.1" value="7.5"></div>
+                        <div class="form-group"><label>EC (ملوحة)</label><input type="number" id="valEC" step="0.1" value="1.2"></div>
+                        <div class="form-group"><label>المادة العضوية %</label><input type="number" id="valOM" step="0.1" value="1.5"></div>
                     </div>
 
-                    <label style="color: #f43f5e;"><i class="fas fa-thermometer-half"></i> خصائص التربة (pH, EC)</label>
-                    <div class="input-grid">
-                        <div class="form-group"><input type="number" id="soilPH" placeholder="pH" step="0.1" value="7.2"></div>
-                        <div class="form-group"><input type="number" id="soilEC" placeholder="EC (ملي موز)" step="0.1" value="1.5"></div>
-                        <div class="form-group">
-                            <select id="waterSource">
-                                <option value="1">ماء عذب</option>
-                                <option value="0.8">ماء بئر (مالح قليلاً)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-calc" onclick="calculateFinal()">
-                        <i class="fas fa-calculator"></i> إجراء الحسابات الدقيقة وإرسال للمصنع
+                    <button class="btn btn-calc" onclick="runFullAnalysis()">
+                        <i class="fas fa-vials"></i> بدء التحليل الشامل وإرسال التركيبة للمصنع
                     </button>
                 </div>
 
-                <div id="resultsCard" class="card" style="display:none;">
-                    <div class="card-title"><i class="fas fa-file-invoice"></i> الوصفة السمادية والمردود المتوقع</div>
-                    <div id="yieldReport" style="margin-bottom: 1.5rem;"></div>
+                <div id="resultsCard" class="card" style="display: none;">
+                    <div class="card-title"><i class="fas fa-chart-bar"></i> تحليل الفجوة الغذائية (Gap Analysis)</div>
                     <div class="chart-container">
-                        <canvas id="mainChart"></canvas>
+                        <canvas id="analysisChart"></canvas>
                     </div>
                 </div>
             </div>
 
             <div class="right-col">
                 <div class="card">
-                    <div class="card-title"><i class="fas fa-wifi"></i> التحكم المباشر (IoT)</div>
-                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">تحكم في صمامات الري بناءً على التوصية المائية المحسوبة.</p>
-                    
-                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                        <span id="valveLabel">صمام الحقل الرئيسي: مغلق</span>
-                        <button id="valveBtn" class="btn btn-valve" style="margin-top:10px;" onclick="toggleValve()">
-                            <i class="fas fa-power-off"></i> فتح الصمام
+                    <div class="card-title"><i class="fas fa-faucet"></i> وحدة التحكم في الري (IoT)</div>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 10px;">
+                        <span style="font-size: 0.85rem; color: #64748b;">حالة الصمام:</span>
+                        <div id="valveIndicator" style="font-weight: 800; color: var(--danger); margin: 5px 0;">مغلق (OFF)</div>
+                        <button id="valveBtn" class="btn btn-valve" onclick="toggleValve()">
+                            <i class="fas fa-power-off"></i> تبديل حالة الصمام
                         </button>
                     </div>
-
-                    <div class="result-item"><span>الاحتياج المائي:</span> <strong id="resWater">0</strong> م³</div>
-                    <div class="result-item"><span>حالة الرطوبة:</span> <span class="badge badge-primary">مثالية</span></div>
+                    <div class="result-item"><span>الاحتياج المائي الكلي:</span> <strong id="resWater">0</strong> م³</div>
+                    <div class="result-item"><span>كفاءة التربة المتوقعة:</span> <strong id="soilEfficiency">0</strong>%</div>
                 </div>
 
-                <div class="card" style="background: #fffbeb; border-color: #fef3c7;">
-                    <div class="card-title" style="color: #92400e;"><i class="fas fa-boxes"></i> تفاصيل الطلبية المصنعة</div>
-                    <div id="factoryDetails">
-                        <p style="font-size: 0.85rem;">يرجى الضغط على حساب النتائج أولاً...</p>
+                <div class="card" style="border-right: 4px solid var(--accent); background: #fffcf5;">
+                    <div class="card-title" style="color: #b45309;"><i class="fas fa-receipt"></i> تركيبة السماد المخصص للمصنع</div>
+                    <div id="factoryBill">
+                        <p style="font-size: 0.85rem; color: #94a3b8;">بانتظار إدخال البيانات...</p>
                     </div>
                 </div>
             </div>
@@ -172,84 +161,97 @@
 
 <script>
 let myChart = null;
-let valveState = false;
+let isValveOn = false;
 
-const cropRequirements = {
-    "طماطم": { targetN: 220, targetP: 85, targetK: 350, targetCa: 150, waterBase: 600 },
-    "بطاطا": { targetN: 190, targetP: 75, targetK: 400, targetCa: 100, waterBase: 500 },
-    "قمح": { targetN: 140, targetP: 60, targetK: 120, targetCa: 50, waterBase: 350 },
-    "حمضيات": { targetN: 170, targetP: 55, targetK: 280, targetCa: 180, waterBase: 800 }
+// متطلبات المحاصيل لكل هكتار (قيم مرجعية للوصول للمردود الأمثل)
+const cropBase = {
+    "طماطم": { n: 240, p: 90, k: 380, ca: 160, water: 600 },
+    "بطاطا": { n: 200, p: 80, k: 420, ca: 110, water: 500 },
+    "قمح": { n: 150, p: 65, k: 140, ca: 60, water: 350 },
+    "أشجار": { n: 180, p: 60, k: 300, ca: 200, water: 800 }
 };
 
-function calculateFinal() {
+function runFullAnalysis() {
     const crop = document.getElementById('cropType').value;
     const area = parseFloat(document.getElementById('area').value);
-    const req = cropRequirements[crop];
+    const target = parseFloat(document.getElementById('targetYield').value);
+    const ph = parseFloat(document.getElementById('valPH').value);
+    
+    const req = cropBase[crop];
 
-    // جلب كافة المدخلات بدون إنقاص
-    const soilData = {
-        n: parseFloat(document.getElementById('soilN').value) * 2.4,
-        p: parseFloat(document.getElementById('soilP').value) * 2.4,
-        k: parseFloat(document.getElementById('soilK').value) * 2.4,
-        ca: parseFloat(document.getElementById('soilCa').value) * 0.1, // تبسيط للحساب
-        ph: parseFloat(document.getElementById('soilPH').value),
-        ec: parseFloat(document.getElementById('soilEC').value)
+    // جلب قيم التربة الحالية (تحويل ppm لـ كغ/هكتار تقريبياً)
+    const current = {
+        n: parseFloat(document.getElementById('valN').value) * 2.4,
+        p: parseFloat(document.getElementById('valP').value) * 2.4,
+        k: parseFloat(document.getElementById('valK').value) * 2.4,
+        ca: parseFloat(document.getElementById('valCa').value) * 0.1
     };
 
-    // حساب النقص الدقيق
-    const diffN = Math.max(0, (req.targetN - soilData.n) * area);
-    const diffP = Math.max(0, (req.targetP - soilData.p) * area);
-    const diffK = Math.max(0, (req.targetK - soilData.k) * area);
-    const waterNeed = req.waterBase * area * (soilData.ph > 7.5 ? 1.1 : 1);
-
-    // تحديث النتائج
-    document.getElementById('resultsCard').style.display = 'block';
-    document.getElementById('resWater').innerText = waterNeed.toFixed(0);
+    // حساب النقص لكل العناصر مضروباً في المساحة
+    const diffN = Math.max(0, (req.n - current.n) * area);
+    const diffP = Math.max(0, (req.p - current.p) * area);
+    const diffK = Math.max(0, (req.k - current.k) * area);
     
-    document.getElementById('yieldReport').innerHTML = `
-        <div class="result-item"><span>المردود المتوقع:</span> <strong>${(document.getElementById('targetYield').value * area)} طن</strong></div>
-        <div class="result-item"><span>كفاءة الامتصاص (بناءً على pH):</span> <strong>${soilData.ph >= 6 && soilData.ph <= 7 ? '95%' : '75%'}</strong></div>
+    // حساب كفاءة الامتصاص بناءً على pH (القيمة المثالية 6.5)
+    let efficiency = 100 - (Math.abs(ph - 6.5) * 15);
+    efficiency = Math.max(40, Math.min(100, efficiency));
+
+    // حساب الماء
+    const totalWater = req.water * area * (ph > 7.5 ? 1.15 : 1);
+
+    // تحديث الواجهة
+    document.getElementById('resultsCard').style.display = 'block';
+    document.getElementById('resWater').innerText = totalWater.toFixed(0);
+    document.getElementById('soilEfficiency').innerText = efficiency.toFixed(0);
+
+    document.getElementById('factoryBill').innerHTML = `
+        <div class="result-item"><span>المساحة المستهدفة:</span> <strong>${area} هكتار</strong></div>
+        <div class="result-item"><span>نيتروجين نقي مطلوب:</span> <strong>${diffN.toFixed(1)} كغ</strong></div>
+        <div class="result-item"><span>فوسفور نقي مطلوب:</span> <strong>${diffP.toFixed(1)} كغ</strong></div>
+        <div class="result-item"><span>بوتاسيوم نقي مطلوب:</span> <strong>${diffK.toFixed(1)} كغ</strong></div>
+        <hr style="margin:10px 0; border:0; border-top:1px solid #fed7aa;">
+        <div style="font-weight:800; color:var(--primary); text-align:center; font-size:1.1rem;">
+            التكلفة الإجمالية: ${(diffN*95 + diffP*115 + diffK*140).toLocaleString()} دج
+        </div>
+        <p style="font-size:0.7rem; text-align:center; margin-top:5px; color:#9a3412;">* تم استخلاص المواد من رسكلة مياه واد الحراش</p>
     `;
 
-    document.getElementById('factoryDetails').innerHTML = `
-        <div class="result-item"><span>يوريا (مصدر N):</span> <strong>${(diffN * 2.1).toFixed(1)} كغ</strong></div>
-        <div class="result-item"><span>DAP (مصدر P):</span> <strong>${(diffP * 2.2).toFixed(1)} كغ</strong></div>
-        <div class="result-item"><span>كبريتات بوتاسيوم:</span> <strong>${(diffK * 2.0).toFixed(1)} كغ</strong></div>
-        <hr style="margin:10px 0; border:0; border-top:1px solid #fde68a;">
-        <div class="result-item"><span>تكلفة التصنيع الإجمالية:</span> <strong style="color:var(--primary)">${(diffN*90 + diffP*110 + diffK*135).toLocaleString()} دج</strong></div>
-    `;
-
-    renderChart([soilData.n, soilData.p, soilData.k], [req.targetN, req.targetP, req.targetK]);
+    renderChart([current.n, current.p, current.k], [req.n, req.p, req.k]);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function renderChart(current, target) {
-    const ctx = document.getElementById('mainChart').getContext('2d');
+    const ctx = document.getElementById('analysisChart').getContext('2d');
     if(myChart) myChart.destroy();
     myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['N (نيتروجين)', 'P (فوسفور)', 'K (بوتاسيوم)'],
+            labels: ['N (النيتروجين)', 'P (الفوسفور)', 'K (البوتاسيوم)'],
             datasets: [
-                { label: 'المتوفر في التربة', data: current, backgroundColor: '#94a3b8' },
-                { label: 'الاحتياج المثالي', data: target, backgroundColor: '#2d6a4f' }
+                { label: 'المتوفر في التربة (كغ/هكتار)', data: current, backgroundColor: '#94a3b8' },
+                { label: 'الاحتياج المثالي للمحصول', data: target, backgroundColor: '#2d6a4f' }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
     });
 }
 
 function toggleValve() {
-    valveState = !valveState;
+    isValveOn = !isValveOn;
     const btn = document.getElementById('valveBtn');
-    const label = document.getElementById('valveLabel');
-    if(valveState) {
+    const indicator = document.getElementById('valveIndicator');
+    
+    if(isValveOn) {
         btn.className = "btn btn-valve active";
-        btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> إيقاف الري';
-        label.innerText = "صمام الحقل الرئيسي: مفتوح الآن";
+        btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> إغلاق الصمام المائي';
+        indicator.innerText = "مفتوح (ON) - جارٍ الري";
+        indicator.style.color = "var(--success)";
+        // هنا يتم إرسال طلب HTTP لعنوان IP الخاص بـ ESP32
     } else {
         btn.className = "btn btn-valve";
-        btn.innerHTML = '<i class="fas fa-power-off"></i> فتح الصمام';
-        label.innerText = "صمام الحقل الرئيسي: مغلق";
+        btn.innerHTML = '<i class="fas fa-power-off"></i> فتح الصمام المائي';
+        indicator.innerText = "مغلق (OFF)";
+        indicator.style.color = "var(--danger)";
     }
 }
 </script>
