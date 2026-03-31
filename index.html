@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriSmart Hub v6.0 | نظام المردود المتوقع والمثالي</title>
+    <title>AgriSmart Hub v6.0 | المنصة المتكاملة لإدارة الأسمدة والري</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,180 +11,278 @@
         :root {
             --primary: #2d6a4f; --dark: #1b4332; --accent: #ff9f1c;
             --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b;
-            --danger: #ef4444; --success: #22c55e;
+            --blue-eco: #0077b6; --danger: #ef4444; --success: #22c55e;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: var(--bg); color: var(--text); display: flex; }
 
-        .sidebar { width: 260px; background: var(--dark); color: white; padding: 2rem 1.5rem; position: fixed; height: 100%; right: 0; }
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--dark); color: white; padding: 2rem 1.5rem; position: fixed; height: 100%; right: 0; z-index: 100; }
         .main-content { margin-right: 260px; width: calc(100% - 260px); padding: 2rem; }
         
-        .grid-main { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; }
-        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+        .logo { font-size: 1.4rem; font-weight: 800; margin-bottom: 2rem; color: var(--success); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+        .nav-item { padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.6); }
+        .nav-item.active { background: var(--primary); color: white; }
+        .nav-item:hover { background: rgba(255,255,255,0.15); color: white; }
+
+        /* Dashboard Elements */
+        .grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
         .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; color: var(--dark); }
 
+        /* Form Grid */
         .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.8rem; font-weight: 700; color: #64748b; }
-        input, select { width: 100%; padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; font-weight: 600; color: #64748b; }
+        input, select { width: 100%; padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1); }
 
+        /* Buttons */
         .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-calc { background: var(--primary); color: white; margin-top: 10px; font-size: 1.1rem; }
-        
-        /* Yield Comparison Styles */
-        .yield-box { display: flex; justify-content: space-between; gap: 15px; margin-top: 15px; }
-        .yield-item { flex: 1; padding: 15px; border-radius: 12px; text-align: center; }
-        .current { background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; }
-        .ideal { background: #dcfce7; border: 1px solid #bbf7d0; color: #166534; }
-        .yield-val { font-size: 1.8rem; font-weight: 800; display: block; }
+        .btn-calc { background: var(--primary); color: white; margin-top: 10px; }
+        .btn-calc:hover { background: var(--dark); }
+        .btn-valve { background: #64748b; color: white; }
+        .btn-valve.active { background: var(--success); animation: pulse 2s infinite; }
 
-        .chart-container { height: 300px; margin-top: 1.5rem; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+
+        /* Results Display */
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .badge-primary { background: #dcfce7; color: #166534; }
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+
+        /* Yield Comparison Boxes */
+        .yield-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .yield-box { padding: 15px; border-radius: 12px; text-align: center; }
+        .yield-box.current { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .yield-box.ideal { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .yield-box b { font-size: 1.4rem; display: block; }
+
         @media (max-width: 1024px) { .grid-main { grid-template-columns: 1fr; } .sidebar { display: none; } .main-content { margin-right: 0; width: 100%; } }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div style="font-size: 1.4rem; font-weight: 800; color: var(--success); text-align: center; margin-bottom: 2rem;">AgriSmart PRO</div>
+        <div class="logo"><i class="fas fa-microchip"></i> AgriSmart <span>v6.0</span></div>
         <nav>
-            <div style="padding: 10px; background: var(--primary); border-radius: 8px; margin-bottom: 10px;"><i class="fas fa-chart-line"></i> حساب المردود المتوقع</div>
-            <div style="padding: 10px; opacity: 0.7;"><i class="fas fa-industry"></i> مصنع الرسكلة</div>
-            <div style="padding: 10px; opacity: 0.7;"><i class="fas fa-faucet"></i> التحكم بالري</div>
+            <div class="nav-item active"><i class="fas fa-home"></i> الرئيسة</div>
+            <div class="nav-item"><i class="fas fa-vial"></i> مختبر النانو</div>
+            <div class="nav-item"><i class="fas fa-industry"></i> مصنع واد الحراش</div>
+            <div class="nav-item"><i class="fas fa-broadcast-tower"></i> أجهزة IoT</div>
+            <div class="nav-item"><i class="fas fa-history"></i> سجلات الحقل</div>
         </nav>
     </aside>
 
     <main class="main-content">
-        <div style="background: var(--dark); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem;">
-            <h2>مقارنة المردود الإنتاجي (الحالي vs المثالي)</h2>
-            <p style="opacity: 0.8;">تحليل الفوارق الإنتاجية بناءً على نقص العناصر الكيميائية في التربة</p>
+        <div style="background: linear-gradient(90deg, var(--dark), var(--primary)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h2 style="font-weight: 800;">محطة استخلاص الأسمدة العضوية</h2>
+                <p style="opacity: 0.8;">تحليل المردود الحالي مقابل المثالي بناءً على جودة التربة</p>
+            </div>
+            <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px;">
+                <span style="display:block; font-size: 0.8rem;">حالة المصنع</span>
+                <span style="font-weight: 700;"><i class="fas fa-circle" style="color:var(--success); font-size: 0.7rem;"></i> قيد التشغيل</span>
+            </div>
         </div>
 
         <div class="grid-main">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-microscope"></i> مدخلات المختبر والحقل</div>
-                <div class="input-grid">
-                    <div class="form-group"><label>المحصول</label>
-                        <select id="cropType">
-                            <option value="طماطم">طماطم</option>
-                            <option value="بطاطا">بطاطا</option>
-                            <option value="قمح">قمح</option>
-                        </select>
+            <div class="left-col">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-sliders-h"></i> إدخال بيانات التحليل الشامل</div>
+                    
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>نوع المحصول</label>
+                            <select id="cropType">
+                                <option value="طماطم">طماطم</option>
+                                <option value="بطاطا">بطاطا</option>
+                                <option value="قمح">قمح</option>
+                                <option value="حمضيات">حمضيات</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>المساحة (هكتار)</label>
+                            <input type="number" id="area" value="1" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>المردود المرجعي (طن/هكتار)</label>
+                            <input type="number" id="refYield" value="80" disabled>
+                        </div>
                     </div>
-                    <div class="form-group"><label>المساحة (هكتار)</label><input type="number" id="area" value="1"></div>
-                    <div class="form-group"><label>N (ppm)</label><input type="number" id="valN" value="30"></div>
+
+                    <label style="color: var(--primary);"><i class="fas fa-atom"></i> العناصر الكبرى (NPK)</label>
+                    <div class="input-grid">
+                        <div class="form-group"><input type="number" id="soilN" placeholder="N (ppm)" value="45"></div>
+                        <div class="form-group"><input type="number" id="soilP" placeholder="P (ppm)" value="20"></div>
+                        <div class="form-group"><input type="number" id="soilK" placeholder="K (ppm)" value="150"></div>
+                    </div>
+
+                    <label style="color: #6366f1;"><i class="fas fa-vials"></i> العناصر الثانوية والصغرى</label>
+                    <div class="input-grid">
+                        <div class="form-group"><input type="number" id="soilCa" placeholder="Ca (ppm)" value="2000"></div>
+                        <div class="form-group"><input type="number" id="soilMg" placeholder="Mg (ppm)" value="300"></div>
+                        <div class="form-group"><input type="number" id="soilFe" placeholder="Fe (ppm)" value="12"></div>
+                    </div>
+
+                    <label style="color: #f43f5e;"><i class="fas fa-thermometer-half"></i> خصائص التربة (pH, EC)</label>
+                    <div class="input-grid">
+                        <div class="form-group"><input type="number" id="soilPH" placeholder="pH" step="0.1" value="7.2"></div>
+                        <div class="form-group"><input type="number" id="soilEC" placeholder="EC" step="0.1" value="1.5"></div>
+                        <div class="form-group">
+                            <select id="waterSource">
+                                <option value="1">ماء عذب</option>
+                                <option value="0.8">ماء مالح قليلاً</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-calc" onclick="calculateFinal()">
+                        <i class="fas fa-calculator"></i> تحليل الفارق الإنتاجي وإرسال للمصنع
+                    </button>
                 </div>
-                <div class="input-grid">
-                    <div class="form-group"><label>P (ppm)</label><input type="number" id="valP" value="20"></div>
-                    <div class="form-group"><label>K (ppm)</label><input type="number" id="valK" value="100"></div>
-                    <div class="form-group"><label>pH</label><input type="number" id="valPH" value="7.8" step="0.1"></div>
+
+                <div id="resultsCard" class="card" style="display:none;">
+                    <div class="card-title"><i class="fas fa-chart-line"></i> تقرير المردود المتوقع</div>
+                    
+                    <div class="yield-summary">
+                        <div class="yield-box current">
+                            <small>المردود الحالي (بدون تدخل)</small>
+                            <b id="resCurrentYield">0</b> طن
+                        </div>
+                        <div class="yield-box ideal">
+                            <small>المردود المثالي (بعد المعالجة)</small>
+                            <b id="resIdealYield">0</b> طن
+                        </div>
+                    </div>
+
+                    <div id="yieldReport" style="margin-bottom: 1.5rem;"></div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
                 </div>
-                <button class="btn btn-calc" onclick="calculateYieldAnalysis()">
-                    <i class="fas fa-search-plus"></i> تحليل الفارق الإنتاجي
-                </button>
             </div>
 
-            <div id="resultCard" class="card" style="display: none;">
-                <div class="card-title"><i class="fas fa-chart-area"></i> تقرير محاكاة الإنتاج</div>
-                
-                <div class="yield-box">
-                    <div class="yield-item current">
-                        <small>المردود في الحالة العادية</small>
-                        <span id="currentYield" class="yield-val">0</span>
-                        <small>طن / هكتار</small>
+            <div class="right-col">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-wifi"></i> التحكم المباشر (IoT)</div>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">حالة الصمامات بناءً على التحليل الميداني.</p>
+                    
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                        <span id="valveLabel">صمام الحقل الرئيسي: مغلق</span>
+                        <button id="valveBtn" class="btn btn-valve" style="margin-top:10px;" onclick="toggleValve()">
+                            <i class="fas fa-power-off"></i> فتح الصمام
+                        </button>
                     </div>
-                    <div class="yield-item ideal">
-                        <small>المردود بعد معالجة التربة</small>
-                        <span id="idealYield" class="yield-val">0</span>
-                        <small>طن / هكتار</small>
-                    </div>
+
+                    <div class="result-item"><span>الاحتياج المائي:</span> <strong id="resWater">0</strong> م³</div>
+                    <div class="result-item"><span>كفاءة التربة:</span> <strong id="resEfficiency">0</strong>%</div>
                 </div>
 
-                <div style="background: #e0f2fe; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center;">
-                    <i class="fas fa-arrow-up" style="color: var(--success);"></i> 
-                    الزيادة المتوقعة في الإنتاج: <strong id="yieldIncrease" style="color: var(--primary); font-size: 1.2rem;">0</strong> طن
-                </div>
-
-                <div class="chart-container">
-                    <canvas id="yieldChart"></canvas>
+                <div class="card" style="background: #fffbeb; border-color: #fef3c7;">
+                    <div class="card-title" style="color: #92400e;"><i class="fas fa-boxes"></i> الطلبية المطلوبة من المصنع</div>
+                    <div id="factoryDetails">
+                        <p style="font-size: 0.85rem;">بانتظار إجراء الحسابات...</p>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div id="fertilizerCard" class="card" style="display: none; border-top: 5px solid var(--accent);">
-            <div class="card-title" style="color: var(--accent);"><i class="fas fa-truck-loading"></i> الكميات اللازمة من مصنعنا للوصول للحالة المثالية</div>
-            <div id="factoryNeeded" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
         </div>
     </main>
 
 <script>
 let myChart = null;
+let valveState = false;
 
-const cropConfig = {
-    "طماطم": { maxYield: 80, idealNPK: [220, 85, 350] },
-    "بطاطا": { maxYield: 60, idealNPK: [190, 75, 400] },
-    "قمح": { maxYield: 15, idealNPK: [140, 60, 110] }
+const cropRequirements = {
+    "طماطم": { maxYield: 85, targetN: 220, targetP: 85, targetK: 350, waterBase: 600 },
+    "بطاطا": { maxYield: 60, targetN: 190, targetP: 75, targetK: 400, waterBase: 500 },
+    "قمح": { maxYield: 18, targetN: 140, targetP: 60, targetK: 120, waterBase: 350 },
+    "حمضيات": { maxYield: 45, targetN: 170, targetP: 55, targetK: 280, waterBase: 800 }
 };
 
-function calculateYieldAnalysis() {
+function calculateFinal() {
     const crop = document.getElementById('cropType').value;
     const area = parseFloat(document.getElementById('area').value);
-    const ph = parseFloat(document.getElementById('valPH').value);
-    const n = parseFloat(document.getElementById('valN').value) * 2.4;
-    const p = parseFloat(document.getElementById('valP').value) * 2.4;
-    const k = parseFloat(document.getElementById('valK').value) * 2.4;
+    const req = cropRequirements[crop];
 
-    const cfg = cropConfig[crop];
+    const soilData = {
+        n: parseFloat(document.getElementById('soilN').value) * 2.4,
+        p: parseFloat(document.getElementById('soilP').value) * 2.4,
+        k: parseFloat(document.getElementById('soilK').value) * 2.4,
+        ph: parseFloat(document.getElementById('soilPH').value)
+    };
 
-    // خوارزمية حساب المردود الحالي بناءً على "العنصر المحدد" (قانون ليبج لبرميل الحد الأدنى)
-    const ratioN = Math.min(1, n / cfg.idealNPK[0]);
-    const ratioP = Math.min(1, p / cfg.idealNPK[1]);
-    const ratioK = Math.min(1, k / cfg.idealNPK[2]);
+    // 1. حساب المردود الحالي بناءً على "قانون الحد الأدنى" (Liebig's Law)
+    const ratioN = Math.min(1, soilData.n / req.targetN);
+    const ratioP = Math.min(1, soilData.p / req.targetP);
+    const ratioK = Math.min(1, soilData.k / req.targetK);
     
-    // تأثير pH على الامتصاص
-    let phFactor = ph >= 6 && ph <= 7 ? 1 : 0.8; 
+    // تأثير الـ pH على الامتصاص (المثالي بين 6 و 7)
+    let phFactor = 1.0;
+    if (soilData.ph > 7.5 || soilData.ph < 5.5) phFactor = 0.75;
 
-    // المردود الحالي = المردود الأقصى * أقل نسبة توفر للعناصر * عامل pH
-    const currentY = cfg.maxYield * Math.min(ratioN, ratioP, ratioK) * phFactor;
-    const idealY = cfg.maxYield;
+    const currentYieldPerHectare = req.maxYield * Math.min(ratioN, ratioP, ratioK) * phFactor;
+    const idealYieldTotal = req.maxYield * area;
+    const currentYieldTotal = currentYieldPerHectare * area;
 
-    // تحديث الأرقام في الواجهة
-    document.getElementById('resultCard').style.display = 'block';
-    document.getElementById('fertilizerCard').style.display = 'block';
-    document.getElementById('currentYield').innerText = (currentY * area).toFixed(1);
-    document.getElementById('idealYield').innerText = (idealY * area).toFixed(1);
-    document.getElementById('yieldIncrease').innerText = ((idealY - currentY) * area).toFixed(1);
+    // 2. حساب النقائص للطلب المصنعي
+    const diffN = Math.max(0, (req.targetN - soilData.n) * area);
+    const diffP = Math.max(0, (req.targetP - soilData.p) * area);
+    const diffK = Math.max(0, (req.targetK - soilData.k) * area);
+    const waterNeed = req.waterBase * area * (soilData.ph > 7.5 ? 1.15 : 1);
 
-    // حساب النقائص للمصنع
-    const diffN = Math.max(0, (cfg.idealNPK[0] - n) * area);
-    const diffP = Math.max(0, (cfg.idealNPK[1] - p) * area);
-    const diffK = Math.max(0, (cfg.idealNPK[2] - k) * area);
-
-    document.getElementById('factoryNeeded').innerHTML = `
-        <div style="background:#f1f5f9; p:10px; border-radius:8px; text-align:center;">N: <strong>${diffN.toFixed(1)} كغ</strong></div>
-        <div style="background:#f1f5f9; p:10px; border-radius:8px; text-align:center;">P: <strong>${diffP.toFixed(1)} كغ</strong></div>
-        <div style="background:#f1f5f9; p:10px; border-radius:8px; text-align:center;">K: <strong>${diffK.toFixed(1)} كغ</strong></div>
+    // 3. تحديث الواجهة
+    document.getElementById('resultsCard').style.display = 'block';
+    document.getElementById('resCurrentYield').innerText = currentYieldTotal.toFixed(1);
+    document.getElementById('resIdealYield').innerText = idealYieldTotal.toFixed(1);
+    document.getElementById('resWater').innerText = waterNeed.toFixed(0);
+    document.getElementById('resEfficiency').innerText = (phFactor * 100).toFixed(0);
+    
+    document.getElementById('yieldReport').innerHTML = `
+        <div class="result-item"><span>الزيادة في الإنتاج الممكنة:</span> <strong style="color:var(--success)">+${(idealYieldTotal - currentYieldTotal).toFixed(1)} طن</strong></div>
+        <div class="result-item"><span>كفاءة الامتصاص الحالية:</span> <strong>${(phFactor * 100)}%</strong></div>
     `;
 
-    renderChart(currentY, idealY);
+    document.getElementById('factoryDetails').innerHTML = `
+        <div class="result-item"><span>يوريا (مستخلص):</span> <strong>${(diffN * 2.1).toFixed(1)} كغ</strong></div>
+        <div class="result-item"><span>فوسفات (مستخلص):</span> <strong>${(diffP * 2.2).toFixed(1)} كغ</strong></div>
+        <div class="result-item"><span>بوتاسيوم (مستخلص):</span> <strong>${(diffK * 2.0).toFixed(1)} كغ</strong></div>
+        <hr style="margin:10px 0; border:0; border-top:1px solid #fde68a;">
+        <div class="result-item"><span>التكلفة الإجمالية:</span> <strong style="color:var(--primary)">${(diffN*90 + diffP*110 + diffK*135).toLocaleString()} دج</strong></div>
+    `;
+
+    renderChart([soilData.n, soilData.p, soilData.k], [req.targetN, req.targetP, req.targetK]);
 }
 
-function renderChart(current, ideal) {
-    const ctx = document.getElementById('yieldChart').getContext('2d');
+function renderChart(current, target) {
+    const ctx = document.getElementById('mainChart').getContext('2d');
     if(myChart) myChart.destroy();
     myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['المردود الكلي (طن)'],
+            labels: ['N', 'P', 'K'],
             datasets: [
-                { label: 'الحالة العادية (بدون تدخل)', data: [current], backgroundColor: '#ef4444' },
-                { label: 'الحالة المثالية (بعد المعالجة)', data: [ideal], backgroundColor: '#22c55e' }
+                { label: 'المتوفر حالياً', data: current, backgroundColor: '#94a3b8' },
+                { label: 'الاحتياج للحالة المثالية', data: target, backgroundColor: '#2d6a4f' }
             ]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true } }
-        }
+        options: { responsive: true, maintainAspectRatio: false }
     });
+}
+
+function toggleValve() {
+    valveState = !valveState;
+    const btn = document.getElementById('valveBtn');
+    const label = document.getElementById('valveLabel');
+    if(valveState) {
+        btn.className = "btn btn-valve active";
+        btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> إيقاف الري';
+        label.innerText = "صمام الحقل الرئيسي: مفتوح الآن";
+    } else {
+        btn.className = "btn btn-valve";
+        btn.innerHTML = '<i class="fas fa-power-off"></i> فتح الصمام';
+        label.innerText = "صمام الحقل الرئيسي: مغلق";
+    }
 }
 </script>
 </body>
