@@ -2,1208 +2,543 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriSmart - نظام الري الذكي وتحليل التربة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AgriSmart Hub v7.0 | المنصة المتكاملة لإدارة الأسمدة والري</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        body {
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #1a5f3e 0%, #2e7d32 100%);
-            color: white;
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .logo span {
-            color: #ffc107;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: #ffc107;
-        }
-
-        /* أزرار تسجيل الدخول */
-        .auth-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-right: 2rem;
-        }
-
-        .btn-login {
-            background: transparent;
-            color: white;
-            border: 1px solid white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Tajawal';
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-login:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .btn-signup {
-            background: #ffc107;
-            color: #1a5f3e;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Tajawal';
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-signup:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4rem 5%;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
-            min-height: 600px;
-        }
-
-        .hero-content {
-            flex: 1;
-            max-width: 600px;
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            color: #1a5f3e;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        .hero-content h1 span {
-            color: #ff9800;
-            display: block;
-            font-size: 2.5rem;
-        }
-
-        .hero-content p {
-            font-size: 1.3rem;
-            color: #555;
-            margin-bottom: 2rem;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-primary {
-            background: #ff9800;
-            color: white;
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255,152,0,0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #1a5f3e;
-            padding: 1rem 2.5rem;
-            border: 2px solid #1a5f3e;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-secondary:hover {
-            background: #1a5f3e;
-            color: white;
-        }
-
-        .hero-image {
-            flex: 1;
-            text-align: center;
-        }
-
-        .hero-image img {
-            max-width: 100%;
-            height: auto;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Sections */
-        .section {
-            padding: 5rem 5%;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #1a5f3e;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 4px;
-            background: #ff9800;
-            margin: 1rem auto;
-            border-radius: 2px;
-        }
-
-        /* Problem Section */
-        .problem {
-            background: white;
-        }
-
-        .problem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .problem-card {
-            background: #fff3e0;
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .problem-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .problem-card i {
-            font-size: 3rem;
-            color: #f44336;
-            margin-bottom: 1rem;
-        }
-
-        .problem-card h3 {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .problem-card p {
-            color: #666;
-        }
-
-        /* Products */
-        .products {
-            background: #f1f8e9;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(46,125,50,0.2);
-        }
-
-        .product-card.featured::before {
-            content: '⭐ الأكثر مبيعاً';
-            position: absolute;
-            top: 20px;
-            right: -30px;
-            background: #ff9800;
-            color: white;
-            padding: 0.5rem 2rem;
-            transform: rotate(45deg);
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .product-icon {
-            font-size: 4rem;
-            color: #1a5f3e;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-card h3 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #ff9800;
-            margin-bottom: 1rem;
-        }
-
-        .product-price span {
-            font-size: 1rem;
-            color: #666;
-            font-weight: 400;
-        }
-
-        .product-features {
-            list-style: none;
-            margin: 1.5rem 0;
-            text-align: right;
-        }
-
-        .product-features li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .product-features li i {
-            color: #4caf50;
-            margin-left: 0.5rem;
-        }
-
-        /* How it works */
-        .how-it-works {
-            background: white;
-        }
-
-        .steps {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .step {
-            flex: 1;
-            min-width: 200px;
-            text-align: center;
-            position: relative;
-        }
-
-        .step:not(:last-child)::after {
-            content: '→';
-            position: absolute;
-            left: -20px;
-            top: 30px;
-            font-size: 3rem;
-            color: #ff9800;
-            font-weight: 900;
-        }
-
-        .step-number {
-            width: 60px;
-            height: 60px;
-            background: #1a5f3e;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 900;
-            margin: 0 auto 1rem;
-            border: 3px solid #ff9800;
-        }
-
-        .step h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        .step p {
-            color: #666;
-        }
-
-        /* Digital Analysis */
-        .digital-analysis {
-            background: linear-gradient(135deg, #1a5f3e 0%, #2e7d32 100%);
-            color: white;
-        }
-
-        .digital-analysis .section-title {
-            color: white;
-        }
-
-        .digital-analysis .section-title::after {
-            background: #ffc107;
-        }
-
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .analysis-card {
-            background: rgba(255,255,255,0.1);
-            padding: 2rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .analysis-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: #ffc107;
-        }
-
-        .comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .comparison-item {
-            background: rgba(0,0,0,0.3);
-            padding: 1.5rem;
-            border-radius: 10px;
-        }
-
-        .comparison-item.bad {
-            border-right: 4px solid #f44336;
-        }
-
-        .comparison-item.good {
-            border-right: 4px solid #4caf50;
-        }
-
-        .comparison-item i {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .result-box {
-            background: #1e3a2e;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-top: 1.5rem;
-            font-family: monospace;
-            font-size: 1.2rem;
-        }
-
-        .result-box .value {
-            color: #ffc107;
-            font-weight: 700;
-        }
-
-        /* Testimonials */
-        .testimonials {
-            background: white;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .testimonial-card {
-            background: #f5f5f5;
-            padding: 2rem;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .testimonial-card::before {
-            content: '"';
-            position: absolute;
-            top: -20px;
-            right: 20px;
-            font-size: 5rem;
-            color: #ff9800;
-            opacity: 0.3;
-            font-family: serif;
-        }
-
-        .testimonial-text {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            color: #555;
-        }
-
-        .testimonial-author {
-            font-weight: 700;
-            color: #1a5f3e;
-        }
-
-        .testimonial-location {
-            color: #ff9800;
-            font-size: 0.9rem;
-        }
-
-        /* Lead Capture */
-        .lead-capture {
-            background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
-            color: white;
-            text-align: center;
-        }
-
-        .lead-form {
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .lead-form input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            outline: none;
-            min-width: 250px;
-        }
-
-        .lead-form button {
-            background: #1a5f3e;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .lead-form button:hover {
-            transform: scale(1.05);
-        }
-
-        .benefits {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .benefits span {
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 1rem;
-        }
-
-        /* Footer */
-        footer {
-            background: #1a1a1a;
-            color: white;
-            padding: 3rem 5% 1rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-            color: #ff9800;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section ul li a {
-            color: #aaa;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-section ul li a:hover {
-            color: #ff9800;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .social-links a {
-            color: white;
-            background: #333;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .social-links a:hover {
-            background: #ff9800;
-            transform: translateY(-3px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #333;
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-
-        /* تنسيقات النافذة المنبثقة (Modal) */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 1.5rem;
-            color: #666;
-            cursor: pointer;
-        }
-
-        .modal-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #eee;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 1rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #666;
-            cursor: pointer;
-            font-family: 'Tajawal';
-        }
-
-        .tab-btn.active {
-            color: #1a5f3e;
-            border-bottom: 3px solid #ff9800;
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active-form {
-            display: block;
-            animation: fadeIn 0.4s;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #aaa;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 1rem 2.5rem 1rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            outline: none;
-            font-family: 'Tajawal';
-            transition: border-color 0.3s;
-        }
-
-        .input-group input:focus {
-            border-color: #1a5f3e;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
-            }
-            .auth-buttons {
-                display: none; /* إخفاء الأزرار في الجوال لعدم وجود قائمة جانبية حالياً */
-            }
-            .hero {
-                flex-direction: column;
-                text-align: center;
-            }
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            .hero-buttons {
-                justify-content: center;
-            }
-            .step:not(:last-child)::after {
-                content: '↓';
-                left: 50%;
-                top: auto;
-                bottom: -30px;
-                transform: translateX(-50%);
-            }
-            .analysis-grid {
-                grid-template-columns: 1fr;
-            }
-            .lead-form {
-                flex-direction: column;
-            }
-            .lead-form input,
-            .lead-form button {
-                width: 100%;
-            }
-        }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 1s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        :root {
+            --primary: #2d6a4f; --dark: #1b4332; --accent: #ff9f1c;
+            --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b;
+            --blue-eco: #0077b6; --danger: #ef4444; --success: #22c55e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: var(--bg); color: var(--text); display: flex; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--dark); color: white; padding: 2rem 1.5rem; position: fixed; height: 100%; right: 0; z-index: 100; overflow-y: auto; }
+        .main-content { margin-right: 260px; width: calc(100% - 260px); padding: 2rem; }
+        
+        .logo { font-size: 1.4rem; font-weight: 800; margin-bottom: 2rem; color: var(--success); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+        .nav-item { padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.6); }
+        .nav-item.active { background: var(--primary); color: white; }
+        .nav-item:hover { background: rgba(255,255,255,0.15); color: white; }
+
+        /* Dashboard Elements */
+        .grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; color: var(--dark); }
+
+        /* Form Grid */
+        .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; font-weight: 600; color: #64748b; }
+        input, select { width: 100%; padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; background: white; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1); }
+
+        /* Buttons */
+        .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-calc { background: var(--primary); color: white; margin-top: 10px; }
+        .btn-calc:hover { background: var(--dark); }
+        .btn-valve { background: #64748b; color: white; }
+        .btn-valve.active { background: var(--success); animation: pulse 2s infinite; }
+        .btn-login { background: var(--accent); color: var(--dark); }
+        .btn-logout { background: #64748b; color: white; margin-top: 1rem; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+
+        /* Results Display */
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+
+        /* Yield Comparison Boxes */
+        .yield-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .yield-box { padding: 15px; border-radius: 12px; text-align: center; }
+        .yield-box.current { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .yield-box.ideal { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .yield-box b { font-size: 1.4rem; display: block; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; border-radius: 24px; padding: 2rem; max-width: 450px; width: 90%; text-align: center; }
+        .modal-content input { width: 100%; margin-bottom: 1rem; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; }
+        .modal-content .btn { margin-top: 0.5rem; }
+        .switch-auth { color: var(--primary); cursor: pointer; margin-top: 1rem; display: inline-block; }
+
+        /* User info */
+        .user-info { display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.15); padding: 0.5rem 1rem; border-radius: 40px; margin-bottom: 1rem; }
+        .user-avatar { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--dark); }
+
+        @media (max-width: 1024px) { .grid-main { grid-template-columns: 1fr; } .sidebar { display: none; } .main-content { margin-right: 0; width: 100%; } }
+        
+        .hidden { display: none; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 0.8rem 1.8rem; border-radius: 50px; display: none; z-index: 3000; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">Agri<span>Smart</span>.dz</div>
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fas fa-microchip"></i> AgriSmart <span>v7.0</span></div>
+        <div id="sidebarUserInfo" class="user-info" style="display: none;">
+            <div class="user-avatar" id="userAvatar">م</div>
+            <div><span id="sidebarUserName"></span><br><small style="font-size:0.7rem;">مستخدم</small></div>
+        </div>
         <nav>
-            <ul>
-                <li><a href="#home">الرئيسية</a></li>
-                <li><a href="#products">منتجاتنا</a></li>
-                <li><a href="#how-it-works">كيف يعمل</a></li>
-                <li><a href="#digital">التحليل الرقمي</a></li>
-                <li><a href="#contact">اتصل بنا</a></li>
-            </ul>
-            <div class="auth-buttons">
-                <button onclick="openModal('login')" class="btn-login">دخول</button>
-                <button onclick="openModal('register')" class="btn-signup">حساب جديد</button>
-            </div>
+            <div class="nav-item active" onclick="showTab('dashboard')"><i class="fas fa-home"></i> الرئيسة</div>
+            <div class="nav-item" onclick="showTab('lab')"><i class="fas fa-vial"></i> مختبر النانو</div>
+            <div class="nav-item" onclick="showTab('factory')"><i class="fas fa-industry"></i> مصنع واد الحراش</div>
+            <div class="nav-item" onclick="showTab('iot')"><i class="fas fa-broadcast-tower"></i> أجهزة IoT</div>
+            <div class="nav-item" onclick="showTab('history')"><i class="fas fa-history"></i> سجلات الحقل</div>
         </nav>
-    </header>
+        <button id="logoutBtn" class="btn btn-logout" style="margin-top: 2rem; display: none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+    </aside>
 
-    <section class="hero" id="home">
-        <div class="hero-content fade-in">
-            <h1>
-                ازرع بذكاء، وفر الماء<br>
-                <span>وزود الإنتاج لحد 40%</span>
-            </h1>
-            <p>نظام الري الذكي + محلل التربة الرقمي | أول حل متكامل في الجزائر</p>
-            <div class="hero-buttons">
-                <a href="#lead" class="btn-primary">🚀 سجل اهتمامك</a>
-                <a href="#how-it-works" class="btn-secondary">▶ شاهد كيف يعمل</a>
+    <main class="main-content">
+        <!-- رأس الصفحة مع معلومات المستخدم -->
+        <div style="background: linear-gradient(90deg, var(--dark), var(--primary)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h2 style="font-weight: 800;">محطة استخلاص الأسمدة العضوية</h2>
+                <p style="opacity: 0.8;">تحليل المردود الحالي مقابل المثالي بناءً على جودة التربة</p>
+            </div>
+            <div id="headerAuthButtons" style="display: flex; gap: 10px;">
+                <button class="btn btn-login" style="background: white; color: var(--primary);" onclick="openModal('login')"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+                <button class="btn btn-login" style="background: var(--accent); color: white;" onclick="openModal('signup')"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+            </div>
+            <div id="headerUserInfo" style="display: none; align-items: center; gap: 1rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 40px;">
+                <i class="fas fa-user-circle"></i>
+                <span id="headerUserName"></span>
             </div>
         </div>
-        <div class="hero-image">
-            <svg width="400" height="400" viewBox="0 0 400 400">
-                <rect x="120" y="50" width="160" height="280" rx="20" fill="#333"/>
-                <rect x="130" y="60" width="140" height="250" rx="10" fill="#fff"/>
-                <rect x="140" y="80" width="120" height="180" rx="5" fill="#1a5f3e"/>
-                <circle cx="200" cy="280" r="15" fill="#ff9800"/>
-                <path d="M200 150 L200 100 L190 90 L200 80 L210 90 L200 100" fill="#4caf50"/>
-                <path d="M180 130 L180 80 L170 70 L180 60 L190 70 L180 80" fill="#4caf50"/>
-                <path d="M220 140 L220 90 L210 80 L220 70 L230 80 L220 90" fill="#4caf50"/>
-                <circle cx="160" cy="320" r="5" fill="#2196f3" opacity="0.6"/>
-                <circle cx="200" cy="330" r="7" fill="#2196f3" opacity="0.6"/>
-                <circle cx="240" cy="320" r="5" fill="#2196f3" opacity="0.6"/>
-            </svg>
-        </div>
-    </section>
 
-    <section class="section problem">
-        <h2 class="section-title">المشكلة اللي حلها مشروعنا</h2>
-        <div class="problem-grid">
-            <div class="problem-card">
-                <i class="fas fa-water"></i>
-                <h3>هدر الماء</h3>
-                <p>40% من ماء السقي يضيع بسبب الري التقليدي</p>
-            </div>
-            <div class="problem-card">
-                <i class="fas fa-flask"></i>
-                <h3>تحاليل غالية</h3>
-                <p>تحليل التربة في المخابر غالي وياخد وقت طويل</p>
-            </div>
-            <div class="problem-card">
-                <i class="fas fa-seedling"></i>
-                <h3>أمراض النبات</h3>
-                <p>تكتشف متأخر بعد ما يضعف المحصول</p>
-            </div>
-            <div class="problem-card">
-                <i class="fas fa-chart-line"></i>
-                <h3>إنتاج قليل</h3>
-                <p>مردودية الأرض تحت 30% من قدرتها الحقيقية</p>
-            </div>
-        </div>
-    </section>
+        <!-- المحتوى الرئيسي (يظهر فقط بعد تسجيل الدخول) -->
+        <div id="mainContent" style="display: none;">
+            <div class="grid-main">
+                <div class="left-col">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-sliders-h"></i> إدخال بيانات التحليل الشامل</div>
+                        
+                        <div class="input-grid">
+                            <div class="form-group">
+                                <label>نوع المحصول</label>
+                                <select id="cropType">
+                                    <option value="طماطم">طماطم</option>
+                                    <option value="بطاطا">بطاطا</option>
+                                    <option value="قمح">قمح</option>
+                                    <option value="حمضيات">حمضيات</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المساحة (هكتار)</label>
+                                <input type="number" id="area" value="1" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>المردود المرجعي (طن/هكتار)</label>
+                                <input type="number" id="refYield" value="80" disabled>
+                            </div>
+                        </div>
 
-    <section class="section products" id="products">
-        <h2 class="section-title">منتجاتنا الذكية</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <div class="product-icon"><i class="fas fa-water"></i></div>
-                <h3>نظام الري الأساسي</h3>
-                <div class="product-price">15,000 دج <span>/شهرياً</span></div>
-                <ul class="product-features">
-                    <li><i class="fas fa-check"></i> صمامات أوتوماتيكية</li>
-                    <li><i class="fas fa-check"></i> ربط ببيانات الطقس</li>
-                    <li><i class="fas fa-check"></i> تطبيق هاتف للتحكم</li>
-                    <li><i class="fas fa-check"></i> جدول سقي ذكي</li>
-                </ul>
-                <a href="#lead" class="btn-primary">أطلب الآن</a>
-            </div>
+                        <label style="color: var(--primary);"><i class="fas fa-atom"></i> العناصر الكبرى (NPK)</label>
+                        <div class="input-grid">
+                            <div class="form-group"><input type="number" id="soilN" placeholder="N (ppm)" value="45"></div>
+                            <div class="form-group"><input type="number" id="soilP" placeholder="P (ppm)" value="20"></div>
+                            <div class="form-group"><input type="number" id="soilK" placeholder="K (ppm)" value="150"></div>
+                        </div>
 
-            <div class="product-card featured">
-                <div class="product-icon"><i class="fas fa-microchip"></i></div>
-                <h3>النظام المتكامل</h3>
-                <div class="product-price">35,000 دج <span>/شهرياً</span></div>
-                <ul class="product-features">
-                    <li><i class="fas fa-check"></i> كل مزايا النظام الأساسي</li>
-                    <li><i class="fas fa-check"></i> محلل تربة رقمي</li>
-                    <li><i class="fas fa-check"></i> توصيات تسميد دقيقة</li>
-                    <li><i class="fas fa-check"></i> كشف الأمراض بالصور</li>
-                </ul>
-                <a href="#lead" class="btn-primary">أطلب الآن</a>
-            </div>
+                        <label style="color: #6366f1;"><i class="fas fa-vials"></i> العناصر الثانوية والصغرى</label>
+                        <div class="input-grid">
+                            <div class="form-group"><input type="number" id="soilCa" placeholder="Ca (ppm)" value="2000"></div>
+                            <div class="form-group"><input type="number" id="soilMg" placeholder="Mg (ppm)" value="300"></div>
+                            <div class="form-group"><input type="number" id="soilFe" placeholder="Fe (ppm)" value="12"></div>
+                        </div>
 
-            <div class="product-card">
-                <div class="product-icon"><i class="fas fa-vial"></i></div>
-                <h3>محلل التربة المتنقل</h3>
-                <div class="product-price">12,000 دج <span>/مرة واحدة</span></div>
-                <ul class="product-features">
-                    <li><i class="fas fa-check"></i> عدة كيميائية Hanna</li>
-                    <li><i class="fas fa-check"></i> صندوق تصوير قياسي</li>
-                    <li><i class="fas fa-check"></i> تطبيق يحلل الألوان</li>
-                    <li><i class="fas fa-check"></i> يعطي أرقام ppm دقيقة</li>
-                </ul>
-                <a href="#lead" class="btn-primary">أطلب الآن</a>
-            </div>
-        </div>
-    </section>
+                        <label style="color: #f43f5e;"><i class="fas fa-thermometer-half"></i> خصائص التربة (pH, EC)</label>
+                        <div class="input-grid">
+                            <div class="form-group"><input type="number" id="soilPH" placeholder="pH" step="0.1" value="7.2"></div>
+                            <div class="form-group"><input type="number" id="soilEC" placeholder="EC" step="0.1" value="1.5"></div>
+                            <div class="form-group">
+                                <select id="waterSource">
+                                    <option value="1">ماء عذب</option>
+                                    <option value="0.8">ماء مالح قليلاً</option>
+                                </select>
+                            </div>
+                        </div>
 
-    <section class="section how-it-works" id="how-it-works">
-        <h2 class="section-title">كيف يعمل النظام؟</h2>
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <h3>تثبيت الجهاز</h3>
-                <p>تركب الصمامات والحساسات في أرضك</p>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <h3>تحميل التطبيق</h3>
-                <p>تدخل مساحة الأرض ونوع المحصول</p>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <h3>تحليل التربة</h3>
-                <p>تصور العينة والتطبيق يحولها لأرقام</p>
-            </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <h3>ري وتسميد ذكي</h3>
-                <p>النظام يشتغل أوتوماتيكياً وانت تتفرج</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section digital-analysis" id="digital">
-        <h2 class="section-title">🧪 التحليل الرقمي - ابتكارنا الحصري</h2>
-        <div class="analysis-grid">
-            <div class="analysis-card">
-                <h3>من الألوان إلى أرقام دقيقة</h3>
-                <p>حوّلنا عدة Hanna HI3896 التقليدية إلى جهاز رقمي احترافي</p>
-                
-                <div class="comparison">
-                    <div class="comparison-item bad">
-                        <i class="fas fa-times-circle" style="color: #f44336;"></i>
-                        <h4>الطريقة العادية</h4>
-                        <p>مقارنة بالألوان</p>
-                        <p style="font-size: 2rem; font-weight: 900;">Low/Medium/High</p>
+                        <button class="btn btn-calc" onclick="calculateFinal()">
+                            <i class="fas fa-calculator"></i> تحليل الفارق الإنتاجي وإرسال للمصنع
+                        </button>
                     </div>
-                    <div class="comparison-item good">
-                        <i class="fas fa-check-circle" style="color: #4caf50;"></i>
-                        <h4>طريقتنا الذكية</h4>
-                        <p>تحليل رقمي بالذكاء الاصطناعي</p>
-                        <p style="font-size: 2rem; font-weight: 900; color: #ffc107;">42 ppm</p>
+
+                    <div id="resultsCard" class="card" style="display:none;">
+                        <div class="card-title"><i class="fas fa-chart-line"></i> تقرير المردود المتوقع</div>
+                        
+                        <div class="yield-summary">
+                            <div class="yield-box current">
+                                <small>المردود الحالي (بدون تدخل)</small>
+                                <b id="resCurrentYield">0</b> طن
+                            </div>
+                            <div class="yield-box ideal">
+                                <small>المردود المثالي (بعد المعالجة)</small>
+                                <b id="resIdealYield">0</b> طن
+                            </div>
+                        </div>
+
+                        <div id="yieldReport" style="margin-bottom: 1.5rem;"></div>
+                        <div class="chart-container">
+                            <canvas id="mainChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
-                <div class="result-box">
-                    <p>📸 صورة → تحليل ذكي → نتائج دقيقة</p>
-                    <p style="margin-top: 1rem;">
-                        <span class="value">النيتروجين (N): 42 mg/kg</span> (منخفض - يحتاج 5kg سماد)<br>
-                        <span class="value">الفوسفور (P): 28 mg/kg</span> (جيد)<br>
-                        <span class="value">البوتاسيوم (K): 110 mg/kg</span> (مرتفع)<br>
-                        <span class="value">pH: 6.8</span> (مثالي)
-                    </p>
+                <div class="right-col">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-wifi"></i> التحكم المباشر (IoT)</div>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">حالة الصمامات بناءً على التحليل الميداني.</p>
+                        
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                            <span id="valveLabel">صمام الحقل الرئيسي: مغلق</span>
+                            <button id="valveBtn" class="btn btn-valve" style="margin-top:10px;" onclick="toggleValve()">
+                                <i class="fas fa-power-off"></i> فتح الصمام
+                            </button>
+                        </div>
+
+                        <div class="result-item"><span>الاحتياج المائي:</span> <strong id="resWater">0</strong> م³</div>
+                        <div class="result-item"><span>كفاءة التربة:</span> <strong id="resEfficiency">0</strong>%</div>
+                    </div>
+
+                    <div class="card" style="background: #fffbeb; border-color: #fef3c7;">
+                        <div class="card-title" style="color: #92400e;"><i class="fas fa-boxes"></i> الطلبية المطلوبة من المصنع</div>
+                        <div id="factoryDetails">
+                            <p style="font-size: 0.85rem;">بانتظار إجراء الحسابات...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div style="text-align: center;">
-                <svg width="300" height="300" viewBox="0 0 300 300">
-                    <rect x="120" y="50" width="60" height="200" rx="10" fill="#ccc" opacity="0.3"/>
-                    <rect x="130" y="60" width="40" height="180" rx="5" fill="#ff9800" opacity="0.6"/>
-                    <rect x="180" y="150" width="100" height="120" rx="10" fill="#333"/>
-                    <rect x="185" y="155" width="90" height="100" rx="5" fill="#fff"/>
-                    <circle cx="235" cy="265" r="8" fill="#4caf50"/>
-                    <path d="M170 150 L200 170" stroke="#ff9800" stroke-width="3" marker-end="url(#arrow)"/>
-                    <defs>
-                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-                            <path d="M0,0 L10,5 L0,10" fill="#ff9800"/>
-                        </marker>
-                    </defs>
-                </svg>
-                <p style="color: white; margin-top: 1rem;">كاميرا + ذكاء اصطناعي = مختبر في جيبك</p>
+        </div>
+
+        <!-- رسالة ترحيب قبل تسجيل الدخول -->
+        <div id="welcomeMessage" class="card" style="text-align: center; padding: 3rem;">
+            <i class="fas fa-seedling" style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem;"></i>
+            <h3>مرحباً بك في AgriSmart Hub</h3>
+            <p style="margin: 1rem 0;">منصة متكاملة لإدارة الأسمدة والري باستخدام الذكاء الاصطناعي وإنترنت الأشياء</p>
+            <p style="color: var(--primary);">🚀 سجل دخولك للوصول إلى جميع الميزات:</p>
+            <ul style="list-style: none; margin-top: 1rem;">
+                <li>✅ تحليل المردودية بقانون ليبج</li>
+                <li>✅ حساب العناصر الناقصة بدقة</li>
+                <li>✅ طلب السماد المخصص من مصنع واد الحراش</li>
+                <li>✅ التحكم عن بعد في صمامات الري</li>
+            </ul>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn btn-login" style="background: var(--primary); color: white; width: auto; padding: 0.8rem 2rem;" onclick="openModal('login')">تسجيل الدخول</button>
+                <button class="btn btn-login" style="background: var(--accent); color: white; width: auto; padding: 0.8rem 2rem;" onclick="openModal('signup')">إنشاء حساب جديد</button>
             </div>
         </div>
-    </section>
+    </main>
 
-    <section class="section testimonials">
-        <h2 class="section-title">ماذا يقول فلاحون جربوا النظام؟</h2>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <p class="testimonial-text">"وفرت 30% من ماء السقي في أول شهر. الجهار هذا رهيب والله"</p>
-                <p class="testimonial-author">علي بن محمد</p>
-                <p class="testimonial-location">سطيف - 5 هكتار</p>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">"عرفت بالضبط شنو نزرع وأشنو نسمد. التربة تاعنا فيها نقص بوتاسيوم"</p>
-                <p class="testimonial-author">محمد لمين</p>
-                <p class="testimonial-location">الشلف - 3 هكتار</p>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">"التطبيق سهل والمعلومات دقيقة. هذي هي الفلاحة العقلانية"</p>
-                <p class="testimonial-author">ربيعة بن علي</p>
-                <p class="testimonial-location">بسكرة - نخيل</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section lead-capture" id="lead">
-        <h2 class="section-title" style="color: white;">🚀 كن أول من يجرب النظام</h2>
-        <p style="font-size: 1.3rem; margin-bottom: 2rem;">سجل بريدك الإلكتروني واحصل على خصم 20% للمتبنين الأوائل</p>
-        
-        <form class="lead-form" onsubmit="event.preventDefault(); alert('شكراً لتسجيلك! سنتواصل معك قريباً');">
-            <input type="email" placeholder="example@email.com" required>
-            <button type="submit">سجل الآن مجاناً</button>
-        </form>
-
-        <div class="benefits">
-            <span>🎁 تجربة مجانية 30 يوم</span>
-            <span>📘 دليل استخدام رقمي</span>
-            <span>💬 دعم فني مباشر</span>
-            <span>💰 خصم 20%</span>
-        </div>
-    </section>
-
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>AgriSmart.dz</h3>
-                <p>أول منصة جزائرية متكاملة للزراعة الذكية. نجمع بين التكنولوجيا والفلاحة باش نزيدو الإنتاج ونوفرو الماء.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h3>روابط سريعة</h3>
-                <ul>
-                    <li><a href="#home">الرئيسية</a></li>
-                    <li><a href="#products">منتجاتنا</a></li>
-                    <li><a href="#how-it-works">كيف يعمل</a></li>
-                    <li><a href="#digital">التحليل الرقمي</a></li>
-                    <li><a href="#lead">سجل اهتمامك</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>اتصل بنا</h3>
-                <ul>
-                    <li><i class="fas fa-envelope"></i> contact@agrismart.dz</li>
-                    <li><i class="fas fa-phone"></i> +213 555 12 34 56</li>
-                    <li><i class="fas fa-map-marker-alt"></i> الجزائر - الجزائر العاصمة</li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>النشرة البريدية</h3>
-                <p>آخر أخبار العروض والتحديثات</p>
-                <form style="display: flex; gap: 0.5rem;" onsubmit="event.preventDefault(); alert('تم الاشتراك بنجاح');">
-                    <input type="email" placeholder="بريدك" style="padding: 0.5rem; border-radius: 5px; border: none; flex: 1;">
-                    <button type="submit" style="padding: 0.5rem 1rem; background: #ff9800; border: none; border-radius: 5px; color: white;">اشترك</button>
-                </form>
-            </div>
-        </div>
-        <div class="copyright">
-            © 2024 AgriSmart.dz - جميع الحقوق محفوظة
-        </div>
-    </footer>
-
-    <div id="authModal" class="modal-overlay">
+    <!-- نافذة تسجيل الدخول / إنشاء حساب -->
+    <div class="modal" id="authModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            
-            <div class="modal-tabs">
-                <button class="tab-btn active" onclick="switchTab('login')" id="tab-login">تسجيل الدخول</button>
-                <button class="tab-btn" onclick="switchTab('register')" id="tab-register">حساب جديد</button>
+            <i class="fas fa-seedling" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+            <h3 id="modalTitle">تسجيل الدخول</h3>
+            <div id="loginForm">
+                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+                <input type="password" id="loginPassword" placeholder="كلمة المرور">
+                <button class="btn btn-calc" onclick="login()">دخول</button>
             </div>
-
-            <form id="form-login" class="auth-form active-form" onsubmit="event.preventDefault(); alert('جاري تسجيل الدخول...');">
-                <h3 style="color: #1a5f3e; margin-bottom: 1.5rem; text-align: center;">مرحباً بك مجدداً في AgriSmart</h3>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="البريد الإلكتروني" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="كلمة المرور" required>
-                </div>
-                <a href="#" style="font-size: 0.9rem; color: #ff9800; display: block; margin-bottom: 1rem;">نسيت كلمة المرور؟</a>
-                <button type="submit" class="btn-primary" style="width: 100%; border-radius: 10px;">دخول للمنصة</button>
-            </form>
-
-            <form id="form-register" class="auth-form" onsubmit="event.preventDefault(); alert('تم إنشاء الحساب بنجاح!');">
-                <h3 style="color: #1a5f3e; margin-bottom: 1.5rem; text-align: center;">ابدأ الزراعة الذكية الآن</h3>
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" placeholder="الاسم الكامل (المزارع)" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="البريد الإلكتروني" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" placeholder="رقم الهاتف" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="كلمة المرور" required>
-                </div>
-                <button type="submit" class="btn-primary" style="width: 100%; border-radius: 10px;">إنشاء حساب مجاني</button>
-            </form>
+            <div id="signupForm" style="display: none;">
+                <input type="text" id="signupName" placeholder="الاسم الكامل">
+                <input type="email" id="signupEmail" placeholder="البريد الإلكتروني">
+                <input type="password" id="signupPassword" placeholder="كلمة المرور (6 أحرف على الأقل)">
+                <input type="text" id="signupFarm" placeholder="اسم المزرعة (اختياري)">
+                <button class="btn btn-calc" onclick="signup()">إنشاء حساب</button>
+            </div>
+            <p style="margin-top: 1rem;" id="switchText">ليس لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">إنشاء حساب</span></p>
+            <button class="btn" style="background: #e2e8f0; margin-top: 1rem;" onclick="closeModal()">إلغاء</button>
         </div>
     </div>
 
-    <script>
-        // سلاسة التمرير عند الضغط على الروابط
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if(target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+    <div class="toast" id="toast">تنبيه</div>
 
-        // تأثير ظهور العناصر عند التمرير
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+    <script>
+    // ==================== نظام المستخدمين ====================
+    let users = JSON.parse(localStorage.getItem('agrismart_users')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('agrismart_current_user')) || null;
+
+    let myChart = null;
+    let valveState = false;
+
+    const cropRequirements = {
+        "طماطم": { maxYield: 85, targetN: 220, targetP: 85, targetK: 350, waterBase: 600 },
+        "بطاطا": { maxYield: 60, targetN: 190, targetP: 75, targetK: 400, waterBase: 500 },
+        "قمح": { maxYield: 18, targetN: 140, targetP: 60, targetK: 120, waterBase: 350 },
+        "حمضيات": { maxYield: 45, targetN: 170, targetP: 55, targetK: 280, waterBase: 800 }
+    };
+
+    // ==================== وظائف المصادقة ====================
+    function initAuth() {
+        if(currentUser) {
+            document.getElementById('headerAuthButtons').style.display = 'none';
+            document.getElementById('headerUserInfo').style.display = 'flex';
+            document.getElementById('headerUserName').innerHTML = currentUser.name;
+            document.getElementById('sidebarUserInfo').style.display = 'flex';
+            document.getElementById('sidebarUserName').innerHTML = currentUser.name;
+            document.getElementById('userAvatar').innerHTML = currentUser.name.charAt(0);
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        } else {
+            document.getElementById('headerAuthButtons').style.display = 'flex';
+            document.getElementById('headerUserInfo').style.display = 'none';
+            document.getElementById('sidebarUserInfo').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('welcomeMessage').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+    }
+
+    function openModal(type) {
+        document.getElementById('authModal').style.display = 'flex';
+        if(type === 'login') {
+            document.getElementById('modalTitle').innerText = 'تسجيل الدخول';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('switchText').innerHTML = 'ليس لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">إنشاء حساب</span>';
+        } else {
+            document.getElementById('modalTitle').innerText = 'إنشاء حساب جديد';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('switchText').innerHTML = 'لديك حساب؟ <span class="switch-auth" onclick="toggleAuthMode()">تسجيل الدخول</span>';
+        }
+    }
+
+    function toggleAuthMode() {
+        if(document.getElementById('loginForm').style.display === 'block') {
+            openModal('signup');
+        } else {
+            openModal('login');
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('authModal').style.display = 'none';
+    }
+
+    function signup() {
+        let name = document.getElementById('signupName').value;
+        let email = document.getElementById('signupEmail').value;
+        let password = document.getElementById('signupPassword').value;
+        let farm = document.getElementById('signupFarm').value;
+        
+        if(!name || !email || !password) {
+            showToast('⚠️ الرجاء ملء جميع الحقول الأساسية');
+            return;
+        }
+        if(password.length < 6) {
+            showToast('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+            return;
+        }
+        if(users.find(u => u.email === email)) {
+            showToast('⚠️ هذا البريد مسجل مسبقاً');
+            return;
+        }
+        
+        let newUser = {
+            id: Date.now(),
+            name: name,
+            email: email,
+            password: password,
+            farm: farm || 'مزرعتي',
+            createdAt: new Date().toISOString(),
+            analyses: []
+        };
+        
+        users.push(newUser);
+        localStorage.setItem('agrismart_users', JSON.stringify(users));
+        currentUser = newUser;
+        localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+        
+        showToast('✅ تم إنشاء الحساب بنجاح');
+        closeModal();
+        initAuth();
+        
+        // تحميل التحليلات السابقة للمستخدم
+        loadUserAnalyses();
+    }
+
+    function login() {
+        let email = document.getElementById('loginEmail').value;
+        let password = document.getElementById('loginPassword').value;
+        
+        let user = users.find(u => u.email === email && u.password === password);
+        if(user) {
+            currentUser = user;
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            showToast('✅ مرحباً بك ' + user.name);
+            closeModal();
+            initAuth();
+            loadUserAnalyses();
+        } else {
+            showToast('❌ البريد أو كلمة المرور غير صحيحة');
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('agrismart_current_user');
+        showToast('👋 تم تسجيل الخروج');
+        initAuth();
+    }
+
+    function loadUserAnalyses() {
+        if(currentUser && currentUser.analyses && currentUser.analyses.length > 0) {
+            let lastAnalysis = currentUser.analyses[currentUser.analyses.length - 1];
+            document.getElementById('soilN').value = lastAnalysis.N || 45;
+            document.getElementById('soilP').value = lastAnalysis.P || 20;
+            document.getElementById('soilK').value = lastAnalysis.K || 150;
+            document.getElementById('soilPH').value = lastAnalysis.pH || 7.2;
+        }
+    }
+
+    function saveAnalysisToUser(N, P, K, pH, currentYield, idealYield) {
+        if(currentUser) {
+            if(!currentUser.analyses) currentUser.analyses = [];
+            currentUser.analyses.push({
+                date: new Date().toLocaleString(),
+                N, P, K, pH,
+                currentYield, idealYield,
+                crop: document.getElementById('cropType').value,
+                area: parseFloat(document.getElementById('area').value)
+            });
+            localStorage.setItem('agrismart_current_user', JSON.stringify(currentUser));
+            let userIndex = users.findIndex(u => u.id === currentUser.id);
+            if(userIndex !== -1) users[userIndex] = currentUser;
+            localStorage.setItem('agrismart_users', JSON.stringify(users));
+        }
+    }
+
+    // ==================== وظائف التحليل ====================
+    function calculateFinal() {
+        if(!currentUser) {
+            showToast('⚠️ الرجاء تسجيل الدخول أولاً');
+            openModal('login');
+            return;
+        }
+        
+        const crop = document.getElementById('cropType').value;
+        const area = parseFloat(document.getElementById('area').value);
+        const req = cropRequirements[crop];
+
+        const soilData = {
+            n: parseFloat(document.getElementById('soilN').value) * 2.4,
+            p: parseFloat(document.getElementById('soilP').value) * 2.4,
+            k: parseFloat(document.getElementById('soilK').value) * 2.4,
+            ph: parseFloat(document.getElementById('soilPH').value)
         };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+        // قانون الحد الأدنى (Liebig's Law)
+        const ratioN = Math.min(1, soilData.n / req.targetN);
+        const ratioP = Math.min(1, soilData.p / req.targetP);
+        const ratioK = Math.min(1, soilData.k / req.targetK);
+        
+        // تأثير pH (المثالي بين 6 و 7)
+        let phFactor = 1.0;
+        if(soilData.ph > 7.5 || soilData.ph < 5.5) phFactor = 0.75;
+        else if(soilData.ph > 7 || soilData.ph < 6) phFactor = 0.9;
 
-        document.querySelectorAll('.section, .product-card, .testimonial-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
+        const currentYieldPerHectare = req.maxYield * Math.min(ratioN, ratioP, ratioK) * phFactor;
+        const idealYieldTotal = req.maxYield * area;
+        const currentYieldTotal = currentYieldPerHectare * area;
+
+        // حساب النقائص للطلب المصنعي
+        const diffN = Math.max(0, (req.targetN - soilData.n) * area);
+        const diffP = Math.max(0, (req.targetP - soilData.p) * area);
+        const diffK = Math.max(0, (req.targetK - soilData.k) * area);
+        const waterNeed = req.waterBase * area * (soilData.ph > 7.5 ? 1.15 : 1);
+
+        // حفظ التحليل
+        saveAnalysisToUser(soilData.n/2.4, soilData.p/2.4, soilData.k/2.4, soilData.ph, currentYieldTotal, idealYieldTotal);
+
+        // تحديث الواجهة
+        document.getElementById('resultsCard').style.display = 'block';
+        document.getElementById('resCurrentYield').innerText = currentYieldTotal.toFixed(1);
+        document.getElementById('resIdealYield').innerText = idealYieldTotal.toFixed(1);
+        document.getElementById('resWater').innerText = waterNeed.toFixed(0);
+        document.getElementById('resEfficiency').innerText = (phFactor * 100).toFixed(0);
+        
+        document.getElementById('yieldReport').innerHTML = `
+            <div class="result-item"><span>الزيادة في الإنتاج الممكنة:</span> <strong style="color:var(--success)">+${(idealYieldTotal - currentYieldTotal).toFixed(1)} طن</strong></div>
+            <div class="result-item"><span>كفاءة الامتصاص الحالية:</span> <strong>${(phFactor * 100)}%</strong></div>
+            <div class="result-item"><span>العنصر المحدد (قانون ليبج):</span> <strong>${['N','P','K'][[ratioN, ratioP, ratioK].indexOf(Math.min(ratioN, ratioP, ratioK))]}</strong></div>
+        `;
+
+        document.getElementById('factoryDetails').innerHTML = `
+            <div class="result-item"><span>يوريا (مستخلص):</span> <strong>${Math.ceil(diffN * 2.1).toLocaleString()} كغ</strong></div>
+            <div class="result-item"><span>فوسفات (مستخلص):</span> <strong>${Math.ceil(diffP * 2.2).toLocaleString()} كغ</strong></div>
+            <div class="result-item"><span>بوتاسيوم (مستخلص):</span> <strong>${Math.ceil(diffK * 2.0).toLocaleString()} كغ</strong></div>
+            <hr style="margin:10px 0; border:0; border-top:1px solid #fde68a;">
+            <div class="result-item"><span>التكلفة الإجمالية:</span> <strong style="color:var(--primary)">${Math.ceil(diffN*90 + diffP*110 + diffK*135).toLocaleString()} دج</strong></div>
+            <button class="btn btn-calc" style="margin-top:1rem; background: var(--accent);" onclick="orderFertilizer()"><i class="fas fa-truck"></i> طلب السماد المخصص</button>
+        `;
+
+        renderChart([soilData.n, soilData.p, soilData.k], [req.targetN, req.targetP, req.targetK]);
+    }
+
+    function orderFertilizer() {
+        if(currentUser) {
+            showToast(`📧 تم إرسال طلب السماد إلى مصنع واد الحراش. سنتواصل معك قريباً على بريد ${currentUser.email}`);
+        } else {
+            showToast('⚠️ الرجاء تسجيل الدخول أولاً');
+        }
+    }
+
+    function renderChart(current, target) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['N', 'P', 'K'],
+                datasets: [
+                    { label: 'المتوفر حالياً (كغ/هكتار)', data: current, backgroundColor: '#94a3b8' },
+                    { label: 'الاحتياج للحالة المثالية', data: target, backgroundColor: '#2d6a4f' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
         });
+    }
 
-        // عداد تفاعلي (تأثير رقمي)
-        let count = 0;
-        const counterElement = document.createElement('div');
-        counterElement.style.cssText = 'position: fixed; bottom: 20px; left: 20px; background: #1a5f3e; color: white; padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.9rem; z-index: 999;';
-        counterElement.innerHTML = `👥 ${Math.floor(Math.random() * 50) + 100} مزارع سجلوا هذا الشهر`;
-        document.body.appendChild(counterElement);
-
-        // --- دوال التحكم في النافذة المنبثقة (Modal) ---
-        const modal = document.getElementById('authModal');
-        const modalContent = document.querySelector('.modal-content');
-
-        function openModal(type) {
-            modal.style.display = 'flex';
-            // تفعيل الأنيميشن
-            setTimeout(() => {
-                modal.style.opacity = '1';
-                modalContent.style.transform = 'translateY(0)';
-            }, 10);
-            switchTab(type);
+    function toggleValve() {
+        valveState = !valveState;
+        const btn = document.getElementById('valveBtn');
+        const label = document.getElementById('valveLabel');
+        if(valveState) {
+            btn.className = "btn btn-valve active";
+            btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> إيقاف الري';
+            label.innerText = "صمام الحقل الرئيسي: مفتوح الآن";
+            showToast('💧 تم فتح صمام الري');
+        } else {
+            btn.className = "btn btn-valve";
+            btn.innerHTML = '<i class="fas fa-power-off"></i> فتح الصمام';
+            label.innerText = "صمام الحقل الرئيسي: مغلق";
+            showToast('⏹️ تم إغلاق صمام الري');
         }
+    }
 
-        function closeModal() {
-            modal.style.opacity = '0';
-            modalContent.style.transform = 'translateY(-20px)';
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        }
+    function showToast(msg) {
+        let toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 3000);
+    }
 
-        function switchTab(type) {
-            // تحديث الأزرار
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('tab-' + type).classList.add('active');
-            
-            // تحديث الفورم
-            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active-form'));
-            document.getElementById('form-' + type).classList.add('active-form');
-        }
+    function showTab(tab) {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        event.target.closest('.nav-item').classList.add('active');
+        showToast(`📱 تم فتح قسم ${tab}`);
+    }
 
-        // إغلاق النافذة عند الضغط خارجها
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
+    // تهيئة الصفحة
+    initAuth();
     </script>
 </body>
 </html>
