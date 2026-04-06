@@ -95,7 +95,6 @@
     </aside>
 
     <main class="main-content">
-        <!-- رأس الصفحة مع معلومات المستخدم -->
         <div style="background: linear-gradient(90deg, var(--dark), var(--primary)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <h2 style="font-weight: 800;">محطة استخلاص الأسمدة العضوية</h2>
@@ -111,7 +110,6 @@
             </div>
         </div>
 
-        <!-- المحتوى الرئيسي (يظهر فقط بعد تسجيل الدخول) -->
         <div id="mainContent" style="display: none;">
             <div class="grid-main">
                 <div class="left-col">
@@ -138,7 +136,38 @@
                             </div>
                         </div>
 
-                        <label style="color: var(--primary);"><i class="fas fa-atom"></i> العناصر الكبرى (NPK)</label>
+                        <label style="color: #d97706; margin-top: 10px; border-top: 1px solid #eee; padding-top: 15px;"><i class="fas fa-layer-group"></i> الخصائص الفيزيائية واستراتيجية الإنتاج</label>
+                        <div class="input-grid">
+                            <div class="form-group">
+                                <label>نسيج التربة (Soil Type)</label>
+                                <select id="soilType">
+                                    <option value="loamy">تربة ليمونية (متوازنة)</option>
+                                    <option value="sandy">تربة رملية (نفاذة للماء)</option>
+                                    <option value="clay">تربة طينية (تحتفظ بالماء)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المادة العضوية (%)</label>
+                                <input type="number" id="organicMatter" placeholder="مثال: 1.5" step="0.1" min="0" max="10" value="1.5">
+                            </div>
+                            <div class="form-group">
+                                <label>المحصول في الموسم السابق</label>
+                                <select id="prevCrop">
+                                    <option value="none">مختلف / أرض بور</option>
+                                    <option value="legume">بقوليات (تثبت النيتروجين)</option>
+                                    <option value="same_family">محصول من نفس العائلة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الهدف الإنتاجي</label>
+                                <select id="prodStrategy">
+                                    <option value="intensive">إنتاج مكثف (أقصى مردود)</option>
+                                    <option value="economic">توفير التكاليف (اقتصادي)</option>
+                                    <option value="organic">زراعة عضوية 100%</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label style="color: var(--primary); margin-top: 10px; border-top: 1px solid #eee; padding-top: 15px;"><i class="fas fa-atom"></i> العناصر الكبرى (NPK)</label>
                         <div class="input-grid">
                             <div class="form-group"><input type="number" id="soilN" placeholder="N (ppm)" value="45"></div>
                             <div class="form-group"><input type="number" id="soilP" placeholder="P (ppm)" value="20"></div>
@@ -202,8 +231,8 @@
                             </button>
                         </div>
 
-                        <div class="result-item"><span>الاحتياج المائي:</span> <strong id="resWater">0</strong> م³</div>
-                        <div class="result-item"><span>كفاءة التربة:</span> <strong id="resEfficiency">0</strong>%</div>
+                        <div class="result-item"><span>الاحتياج المائي المقدر:</span> <strong id="resWater">0</strong> م³</div>
+                        <div class="result-item"><span>معامل التربة الفيزيائي:</span> <strong id="resEfficiency">0</strong>%</div>
                     </div>
 
                     <div class="card" style="background: #fffbeb; border-color: #fef3c7;">
@@ -216,7 +245,6 @@
             </div>
         </div>
 
-        <!-- رسالة ترحيب قبل تسجيل الدخول -->
         <div id="welcomeMessage" class="card" style="text-align: center; padding: 3rem;">
             <i class="fas fa-seedling" style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem;"></i>
             <h3>مرحباً بك في AgriSmart Hub</h3>
@@ -235,7 +263,6 @@
         </div>
     </main>
 
-    <!-- نافذة تسجيل الدخول / إنشاء حساب -->
     <div class="modal" id="authModal">
         <div class="modal-content">
             <i class="fas fa-seedling" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
@@ -360,8 +387,6 @@
         showToast('✅ تم إنشاء الحساب بنجاح');
         closeModal();
         initAuth();
-        
-        // تحميل التحليلات السابقة للمستخدم
         loadUserAnalyses();
     }
 
@@ -416,7 +441,7 @@
         }
     }
 
-    // ==================== وظائف التحليل ====================
+    // ==================== وظائف التحليل (تم دمج الإضافات الجديدة هنا) ====================
     function calculateFinal() {
         if(!currentUser) {
             showToast('⚠️ الرجاء تسجيل الدخول أولاً');
@@ -428,6 +453,12 @@
         const area = parseFloat(document.getElementById('area').value);
         const req = cropRequirements[crop];
 
+        // 1. جلب المدخلات الجديدة
+        const soilType = document.getElementById('soilType').value;
+        const organicMatter = parseFloat(document.getElementById('organicMatter').value);
+        const prevCrop = document.getElementById('prevCrop').value;
+        const prodStrategy = document.getElementById('prodStrategy').value;
+
         const soilData = {
             n: parseFloat(document.getElementById('soilN').value) * 2.4,
             p: parseFloat(document.getElementById('soilP').value) * 2.4,
@@ -435,25 +466,53 @@
             ph: parseFloat(document.getElementById('soilPH').value)
         };
 
-        // قانون الحد الأدنى (Liebig's Law)
-        const ratioN = Math.min(1, soilData.n / req.targetN);
-        const ratioP = Math.min(1, soilData.p / req.targetP);
-        const ratioK = Math.min(1, soilData.k / req.targetK);
+        // 2. تطبيق تأثير "الهدف الإنتاجي" (Production Strategy)
+        let strategyFactor = 1.0; 
+        if(prodStrategy === 'economic') strategyFactor = 0.8; // المزارع يريد توفير المال، فنقلل الهدف
+        if(prodStrategy === 'organic') strategyFactor = 0.9;  // الإنتاج العضوي يعطي مردوداً أقل بقليل من الكيماوي المكثف
+        
+        let adjustedTargetN = req.targetN * strategyFactor;
+        let adjustedTargetP = req.targetP * strategyFactor;
+        let adjustedTargetK = req.targetK * strategyFactor;
+        let maxYieldAdjusted = req.maxYield * strategyFactor;
+
+        // 3. تطبيق تأثير "الدورة الزراعية" (Crop Rotation)
+        let rotationAlert = "";
+        if(prevCrop === 'legume') {
+            adjustedTargetN = adjustedTargetN * 0.8; // البقوليات تثبت النيتروجين في التربة، فنقلل من السماد المطلوب
+            rotationAlert = "<span style='color:var(--success); font-size:0.8rem;'><i class='fas fa-info-circle'></i> تم خصم 20% من النيتروجين بفضل زراعة البقوليات سابقاً.</span><br>";
+        } else if (prevCrop === 'same_family') {
+            rotationAlert = "<span style='color:var(--danger); font-size:0.8rem;'><i class='fas fa-exclamation-triangle'></i> تحذير: زراعة نفس العائلة تزيد من خطر الأمراض الفطرية. ينصح بإضافة مبيدات وقائية.</span><br>";
+        }
+
+        // قانون الحد الأدنى (Liebig's Law) - باستخدام الأهداف المعدلة
+        const ratioN = Math.min(1, soilData.n / adjustedTargetN);
+        const ratioP = Math.min(1, soilData.p / adjustedTargetP);
+        const ratioK = Math.min(1, soilData.k / adjustedTargetK);
         
         // تأثير pH (المثالي بين 6 و 7)
         let phFactor = 1.0;
         if(soilData.ph > 7.5 || soilData.ph < 5.5) phFactor = 0.75;
         else if(soilData.ph > 7 || soilData.ph < 6) phFactor = 0.9;
 
-        const currentYieldPerHectare = req.maxYield * Math.min(ratioN, ratioP, ratioK) * phFactor;
-        const idealYieldTotal = req.maxYield * area;
+        // 4. تطبيق تأثير "نوع التربة" و "المادة العضوية" على الاحتياج المائي
+        let soilWaterFactor = 1.0;
+        if(soilType === 'sandy') soilWaterFactor = 1.25; // التربة الرملية تحتاج 25% ماء أكثر (تسرب)
+        else if(soilType === 'clay') soilWaterFactor = 0.85; // التربة الطينية تحتفظ بالماء
+        
+        // المادة العضوية تحسن الاحتفاظ بالماء
+        if(organicMatter > 2.5) soilWaterFactor -= 0.1; 
+        else if(organicMatter < 1.0) soilWaterFactor += 0.1;
+
+        const currentYieldPerHectare = maxYieldAdjusted * Math.min(ratioN, ratioP, ratioK) * phFactor;
+        const idealYieldTotal = maxYieldAdjusted * area;
         const currentYieldTotal = currentYieldPerHectare * area;
 
         // حساب النقائص للطلب المصنعي
-        const diffN = Math.max(0, (req.targetN - soilData.n) * area);
-        const diffP = Math.max(0, (req.targetP - soilData.p) * area);
-        const diffK = Math.max(0, (req.targetK - soilData.k) * area);
-        const waterNeed = req.waterBase * area * (soilData.ph > 7.5 ? 1.15 : 1);
+        const diffN = Math.max(0, (adjustedTargetN - soilData.n) * area);
+        const diffP = Math.max(0, (adjustedTargetP - soilData.p) * area);
+        const diffK = Math.max(0, (adjustedTargetK - soilData.k) * area);
+        const waterNeed = req.waterBase * area * (soilData.ph > 7.5 ? 1.15 : 1) * soilWaterFactor;
 
         // حفظ التحليل
         saveAnalysisToUser(soilData.n/2.4, soilData.p/2.4, soilData.k/2.4, soilData.ph, currentYieldTotal, idealYieldTotal);
@@ -463,24 +522,32 @@
         document.getElementById('resCurrentYield').innerText = currentYieldTotal.toFixed(1);
         document.getElementById('resIdealYield').innerText = idealYieldTotal.toFixed(1);
         document.getElementById('resWater').innerText = waterNeed.toFixed(0);
-        document.getElementById('resEfficiency').innerText = (phFactor * 100).toFixed(0);
+        
+        // عرض كفاءة التربة بناء على المادة العضوية والـ pH
+        let efficiencyScore = phFactor * 100;
+        if(organicMatter < 1) efficiencyScore -= 10;
+        document.getElementById('resEfficiency').innerText = efficiencyScore.toFixed(0);
         
         document.getElementById('yieldReport').innerHTML = `
+            ${rotationAlert}
             <div class="result-item"><span>الزيادة في الإنتاج الممكنة:</span> <strong style="color:var(--success)">+${(idealYieldTotal - currentYieldTotal).toFixed(1)} طن</strong></div>
-            <div class="result-item"><span>كفاءة الامتصاص الحالية:</span> <strong>${(phFactor * 100)}%</strong></div>
+            <div class="result-item"><span>كفاءة امتصاص المغذيات:</span> <strong>${efficiencyScore.toFixed(0)}%</strong></div>
             <div class="result-item"><span>العنصر المحدد (قانون ليبج):</span> <strong>${['N','P','K'][[ratioN, ratioP, ratioK].indexOf(Math.min(ratioN, ratioP, ratioK))]}</strong></div>
         `;
 
+        // إذا اختار "عضوي"، نغير النصوص في الطلبية
+        let fertTypeStr = prodStrategy === 'organic' ? "سماد عضوي واد الحراش" : "مستخلص";
+        
         document.getElementById('factoryDetails').innerHTML = `
-            <div class="result-item"><span>يوريا (مستخلص):</span> <strong>${Math.ceil(diffN * 2.1).toLocaleString()} كغ</strong></div>
-            <div class="result-item"><span>فوسفات (مستخلص):</span> <strong>${Math.ceil(diffP * 2.2).toLocaleString()} كغ</strong></div>
-            <div class="result-item"><span>بوتاسيوم (مستخلص):</span> <strong>${Math.ceil(diffK * 2.0).toLocaleString()} كغ</strong></div>
+            <div class="result-item"><span>نيتروجين (${fertTypeStr}):</span> <strong>${Math.ceil(diffN * 2.1).toLocaleString()} كغ</strong></div>
+            <div class="result-item"><span>فوسفور (${fertTypeStr}):</span> <strong>${Math.ceil(diffP * 2.2).toLocaleString()} كغ</strong></div>
+            <div class="result-item"><span>بوتاسيوم (${fertTypeStr}):</span> <strong>${Math.ceil(diffK * 2.0).toLocaleString()} كغ</strong></div>
             <hr style="margin:10px 0; border:0; border-top:1px solid #fde68a;">
-            <div class="result-item"><span>التكلفة الإجمالية:</span> <strong style="color:var(--primary)">${Math.ceil(diffN*90 + diffP*110 + diffK*135).toLocaleString()} دج</strong></div>
+            <div class="result-item"><span>التكلفة الإجمالية التقريبية:</span> <strong style="color:var(--primary)">${Math.ceil(diffN*90 + diffP*110 + diffK*135).toLocaleString()} دج</strong></div>
             <button class="btn btn-calc" style="margin-top:1rem; background: var(--accent);" onclick="orderFertilizer()"><i class="fas fa-truck"></i> طلب السماد المخصص</button>
         `;
 
-        renderChart([soilData.n, soilData.p, soilData.k], [req.targetN, req.targetP, req.targetK]);
+        renderChart([soilData.n, soilData.p, soilData.k], [adjustedTargetN, adjustedTargetP, adjustedTargetK]);
     }
 
     function orderFertilizer() {
@@ -500,7 +567,7 @@
                 labels: ['N', 'P', 'K'],
                 datasets: [
                     { label: 'المتوفر حالياً (كغ/هكتار)', data: current, backgroundColor: '#94a3b8' },
-                    { label: 'الاحتياج للحالة المثالية', data: target, backgroundColor: '#2d6a4f' }
+                    { label: 'الاحتياج للهدف المختار', data: target, backgroundColor: '#2d6a4f' }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false }
@@ -528,7 +595,7 @@
         let toast = document.getElementById('toast');
         toast.innerText = msg;
         toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', 3000);
+        setTimeout(() => toast.style.display = 'none', 4000); // زيادة وقت العرض قليلاً لقراءة التنبيهات
     }
 
     function showTab(tab) {
